@@ -15,11 +15,12 @@ Game::Game(sf::RenderWindow* window)
 	this->enemy_texture[2].loadFromFile("Images/Green Asteroid.png");
 	this->enemy_texture[3].loadFromFile("Images/Yellow Asteroid.png");
 	this->enemy_texture[4].loadFromFile("Images/Pink Asteroid.png");
+	this->enemy_texture[5].loadFromFile("Images/Asteroid.png");
 
-	this->maxEnemies = 30;
-	this->maxDelaySpawn = 0.1f;
+	this->maxEnemies = 10;
+	this->maxDelaySpawn = 1.f;
 	this->delaySpawn = this->maxDelaySpawn;
-	this->enemy_speed = 0.5f;
+	this->enemy_speed = 300.f;
 }
 
 void Game::UpdateMousePos(sf::RenderWindow* window)
@@ -29,14 +30,14 @@ void Game::UpdateMousePos(sf::RenderWindow* window)
 
 void Game::SpawnEnemy()
 {
-	int spawn_normal = rand() % 5;
-	int level_stat[] = { 1,2,3,4,5 };
-	int hp_stat[] = { 1,2,3,4,5 };
-	int score_stat[] = { 10,20,30,40,50 };
+	int spawn_normal = rand() % 6;
+	int level_stat[] = { 1,2,3,4,5,10 };
+	int hp_stat[] = { 1,2,3,4,5,10 };
+	int score_stat[] = { 10,20,30,40,50,500 };
 	int rand_scale = rand() % 65 + 40;
 	float scale = (float)rand_scale / 100;
-	int rand_posY = rand() % (1080 - (int)(120*scale)) + (int)(60*scale);
-	sf::Vector2f enemy_pos = sf::Vector2f(1920, rand_posY);
+	int rand_posY = rand() % (window->getSize().y - (int)(120 * scale)) + (int)(60 * scale);
+	sf::Vector2f enemy_pos = sf::Vector2f(window->getSize().x, rand_posY);
 	this->enemies.push_back(Enemy(&enemy_texture[spawn_normal], hp_stat[spawn_normal], level_stat[spawn_normal], enemy_speed, score_stat[spawn_normal],enemy_pos,scale));
 }
 
@@ -65,7 +66,10 @@ void Game::Update(float deltaTime)
 				if (this->player[i].get_bullets()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()))
 				{
 					this->player[i].get_bullets().erase(this->player[i].get_bullets().begin() + j);
-					this->enemies.erase(this->enemies.begin() + k);
+					if (this->enemies[k].getHp() > 0)
+						this->enemies[k].receiveDamage(this->player[i].getDamage());
+					if (this->enemies[k].getHp() <= 0)
+						this->enemies.erase(this->enemies.begin() + k);
 					return;
 				}
 			}
@@ -81,7 +85,7 @@ void Game::Update(float deltaTime)
 	//Update Enemy
 	for (int i = 0; i < enemies.size(); i++)
 	{
-		this->enemies[i].updateEnemy();
+		this->enemies[i].updateEnemy(deltaTime);
 		if (enemies[i].getEnemy().getPosition().x < 0)
 		{
 			this->enemies.erase(this->enemies.begin() + i);

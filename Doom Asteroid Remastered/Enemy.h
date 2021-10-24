@@ -5,6 +5,8 @@
 #include<SFML/Audio.hpp>
 #include<SFML/Network.hpp>
 
+#include<cmath>
+#include<iostream>
 class Enemy
 {
 private:
@@ -19,9 +21,18 @@ private:
 
 	float speed;
 	int score;
+
 	//Position
 	sf::Vector2f enemy_position;
+
+	//For Fun
+	int red;
+	int green;
+	int blue;
+	int phase; //degree
+
 public:
+	int& getHp();
 	sf::Sprite& getEnemy();
 	sf::FloatRect getGlobalBounds();
 
@@ -29,7 +40,7 @@ public:
 
 	void receiveDamage(int damage);
 
-	void updateEnemy();
+	void updateEnemy(float deltaTime);
 
 	void renderEnemies(sf::RenderTarget& target);
 };

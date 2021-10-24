@@ -21,7 +21,7 @@ private:
 
 	//Enemy
 	std::vector<Enemy> enemies;
-	sf::Texture enemy_texture[5];
+	sf::Texture enemy_texture[6];
 	int maxEnemies;
 	float enemy_speed;
 

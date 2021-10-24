@@ -14,6 +14,7 @@ Player::Player(sf::Texture* texture)
 
 	this->maxHp = 100;
 	this->hp = this->maxHp;
+	this->damage = 1;
 	this->speed = 1.f;
 	this->weapon_type = 1;
 	this->is_immobility = 0;
@@ -32,6 +33,11 @@ std::vector<Bullet>& Player::get_bullets()
 sf::FloatRect Player::getGlobalBounds()
 {
 	return this->player_sprite.getGlobalBounds();
+}
+
+int& Player::getDamage()
+{
+	return this->damage;
 }
 
 void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position, float deltaTime)

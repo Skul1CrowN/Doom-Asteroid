@@ -24,6 +24,7 @@ private:
 	int integrity;
 	int hp;
 	int maxHp;
+	int damage;
 	float speed;
 	int weapon_type;
 	int score;
@@ -41,6 +42,7 @@ public:
 
 	std::vector<Bullet>& get_bullets();
 	sf::FloatRect getGlobalBounds();
+	int& getDamage();
 
 	void updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position, float deltaTime);
 
