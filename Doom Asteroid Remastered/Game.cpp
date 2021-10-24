@@ -78,6 +78,31 @@ void Game::InitUI()
 	this->integrityBarMax.setFillColor(sf::Color(11, 71, 71));
 	this->integrityBarMax.setPosition(50.f, this->window->getSize().y - 30.f);
 	this->integrityBarMax.setSize(sf::Vector2f(600.f, 5.f));
+
+	//Repaired UI
+	this->hull_text.setFont(this->font);
+	this->hull_text.setString("Hull Breach!");
+	this->hull_text.setPosition(50.f, 45.f);
+	this->hull_text.setCharacterSize(18);
+	this->hull_text.setFillColor(sf::Color(255, 11, 11));
+
+	this->repair_progress.setFont(this->font);
+	this->repair_progress.setPosition(280.f, 45.f);
+	this->repair_progress.setCharacterSize(18);
+
+	this->hull_instruction.setFont(this->font);
+	this->hull_instruction.setString("Hold Spacebar to repair your ship!");
+	this->hull_instruction.setPosition(this->window->getSize().x / 2 - 300.f, 50.f);
+	this->hull_instruction.setCharacterSize(24);
+	this->hull_instruction.setFillColor(sf::Color(255, 255, 255));
+	
+	this->repairedBar.setFillColor(sf::Color(255, 255, 255));
+	this->repairedBar.setSize(sf::Vector2f(300.f, 5.f));
+	this->repairedBar.setPosition(50.f, 65.f);
+
+	this->repairedBarMax.setFillColor(sf::Color(101, 101, 101));
+	this->repairedBarMax.setSize(sf::Vector2f(300.f, 5.f));
+	this->repairedBarMax.setPosition(50.f, 65.f);
 }
 
 void Game::UpdateUI(int i)
@@ -123,6 +148,11 @@ void Game::UpdateUI(int i)
 	//Integrity Bar
 	this->integrity_indicator.setString(std::to_string(this->player[i].getIntegrity()));
 	this->integrityBar.setSize(sf::Vector2f(600.f * ((float)this->player[i].getIntegrity() / this->player[i].getMaxIntegrity()), 5.f));
+
+	//Repaired Bar
+	int progress = (this->player[i].getRepaired() / this->player[i].getRepairRequired()) * 100;
+	this->repair_progress.setString(std::to_string(progress) + "%");
+	this->repairedBar.setSize(sf::Vector2f(300.f * (this->player[i].getRepaired() / this->player[i].getRepairRequired()), 5.f));
 }
 
 void Game::UpdateMousePos(sf::RenderWindow* window)
@@ -190,10 +220,22 @@ void Game::Update(float deltaTime)
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		this->enemies[i].updateEnemy(deltaTime);
-		if (enemies[i].getEnemy().getPosition().x < 0)
+		for (int j = 0; j < player.size(); j++)
 		{
-			this->enemies.erase(this->enemies.begin() + i);
-			break;
+			// Enemy vs Player
+			if (this->enemies[i].getGlobalBounds().intersects(this->player[j].getGlobalBounds()) && !this->player[j].getHullBreach())
+			{
+				this->player[j].receivedDamage(this->enemies[i].getLevel());
+				this->enemies.erase(this->enemies.begin() + i);
+				return;
+			}
+			//Window Check(World Crushed)
+			if (enemies[i].getEnemy().getPosition().x < 0)
+			{
+				this->player[j].receivedWorldDamage(this->enemies[i].getLevel());
+				this->enemies.erase(this->enemies.begin() + i);
+				return;
+			}
 		}
 	}
 
@@ -205,27 +247,46 @@ void Game::Update(float deltaTime)
 void Game::Render()
 {
 	this->window->clear();
-
+	
+	//Player Ship
 	for (int i = 0; i < this->player.size(); i++)
 		this->player[i].renderPlayer(*this->window);
 
+	//Enemy Asteroid
 	for (int i = 0; i < this->enemies.size(); i++)
 		this->enemies[i].renderEnemies(*this->window);
 
-	//HP Bar
-	this->window->draw(hp_indicator);
-	this->window->draw(hpBarMax);
-	this->window->draw(hpBar);
+	
+	//Playre UI
+	for (int i = 0; i < this->player.size(); i++)
+	{
+		if (!this->player[i].getHullBreach())
+		{
+			//HP Bar
+			this->window->draw(hp_indicator);
+			this->window->draw(hpBarMax);
+			this->window->draw(hpBar);
 
-	//Shield Bar
-	this->window->draw(shield_indicator);
-	this->window->draw(shieldBarMax);
-	this->window->draw(shieldBar);
+			//Shield Bar
+			this->window->draw(shield_indicator);
+			this->window->draw(shieldBarMax);
+			this->window->draw(shieldBar);
+		}
+		else
+		{
+			//Repaired Bar
+			this->window->draw(hull_text);
+			this->window->draw(repair_progress);
+			this->window->draw(hull_instruction);
+			this->window->draw(repairedBarMax);
+			this->window->draw(repairedBar);
+		}
+	}
 
 	//Integrity Bar
 	this->window->draw(integrity_indicator);
 	this->window->draw(integrityBarMax);
 	this->window->draw(integrityBar);
-
+	
 	this->window->display();
 }

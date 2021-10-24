@@ -11,13 +11,18 @@ Player::Player(sf::Texture* texture)
 	this->player_sprite.setPosition(sf::Vector2f(50.f, 540.f));
 	this->angle = 0;
 
-	this->maxIntegrity = 1000;
-	this->integrity = 658;
-	this->maxHp = 20;
+	this->maxIntegrity = 800;
+	this->integrity = this->maxIntegrity;
+	this->maxHp = 100;
 	this->hp = this->maxHp;
-	this->maxShield = 10;
+	this->maxShield = 100;
 	this->shield = 0;
-	
+
+	this->hull_breach = 0;
+	this->repaired = 0.f;
+	this->repairRequired = 10.f;
+	this->decayRate = 0.2;
+
 	this->damage = 1;
 	this->weapon_type = 1;
 
@@ -69,13 +74,53 @@ int& Player::getShieldMax()
 	return this->maxShield;
 }
 
+bool& Player::getHullBreach()
+{
+	return this->hull_breach;
+}
+
+float& Player::getRepaired()
+{
+	return this->repaired;
+}
+
+float& Player::getRepairRequired()
+{
+	return this->repairRequired;
+}
+
 int& Player::getDamage()
 {
 	return this->damage;
 }
 
+void Player::receivedDamage(int damage)
+{
+	this->hp -= damage;
+	if (this->hp < 0)
+		this->hp = 0;
+}
+
+void Player::receivedWorldDamage(int damage)
+{
+	this->integrity -= damage;
+	if (this->integrity < 0)
+		this->integrity = 0;
+}
+
 void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position, float deltaTime)
 {
+	//Check Hull breach
+	if (this->hp <= 0)
+	{
+		this->hull_breach = 1;
+	}
+	
+	if (this->hull_breach)
+		this->player_sprite.setColor(sf::Color(128, 128, 128));
+	else
+		this->player_sprite.setColor(sf::Color(255, 255, 255));
+
 	//Update Position
 	this->player_position = this->player_sprite.getPosition();
 
@@ -91,31 +136,61 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 		this->angle = -atanf(mouse_distance.x / mouse_distance.y) * 180.0 / 3.141592;
 	else
 		this->angle = 180 + -atanf(mouse_distance.x / mouse_distance.y) * 180.0 / 3.141592;
-	this->player_sprite.setRotation(this->angle);
+	if(!this->hull_breach)
+		this->player_sprite.setRotation(this->angle);
 
 	//Movement
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && player_position.y > 50.f)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && player_position.y > 50.f && !this->hull_breach)
 	{
 		this->player_sprite.move(0.0f, -(this->speed));
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && player_position.x > 50.f)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && player_position.x > 50.f && !this->hull_breach)
 	{
 		this->player_sprite.move(-(this->speed), 0.0f);
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && player_position.y < window->getSize().y - 50.f)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && player_position.y < window->getSize().y - 50.f && !this->hull_breach)
 	{
 		this->player_sprite.move(0.0f, this->speed);
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && player_position.x < window->getSize().x - 50.f)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && player_position.x < window->getSize().x - 50.f && !this->hull_breach)
 	{
 		this->player_sprite.move(this->speed, 0.0f);
 	}
 
 	//Combat
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && this->delayShoot >= this->maxDelayShoot)
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && this->delayShoot >= this->maxDelayShoot && !this->hull_breach)
 	{
 		this->bullets.push_back(Bullet(player_position, angle));
 		this->delayShoot = 0;
+	}
+
+	//Hull Breach
+	if (this->hull_breach)
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		{
+			this->repaired += deltaTime;
+		}
+		else
+		{
+			this->repaired -= deltaTime * this->decayRate;
+			if (this->repaired < 0)
+				this->repaired = 0;
+		}
+
+		if (this->repaired >= this->repairRequired)
+		{
+			this->hp += this->maxHp * 0.4f;
+			this->hull_breach = 0;
+			this->repaired = 0;
+			this->repairRequired += 5.f;
+			this->decayRate += 0.15f;
+			if (this->repairRequired > 90.f)
+				this->repairRequired = 90.f;
+			if (this->decayRate > 1.7f)
+				this->decayRate = 1.7f;
+		}
+		std::cout << repaired << std::endl;
 	}
 
 	//Time Update

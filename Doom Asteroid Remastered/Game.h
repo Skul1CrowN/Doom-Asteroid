@@ -39,6 +39,12 @@ private:
 	sf::Text integrity_indicator;
 	sf::RectangleShape integrityBar;
 	sf::RectangleShape integrityBarMax;
+	//Hull Breach
+	sf::Text hull_text;
+	sf::Text repair_progress;
+	sf::Text hull_instruction;
+	sf::RectangleShape repairedBar;
+	sf::RectangleShape repairedBarMax;
 
 	//Bullet
 	std::vector<Bullet> bullets;

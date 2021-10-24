@@ -28,6 +28,13 @@ private:
 	int shield;
 	int maxShield;
 
+	//Hull Breach
+	bool hull_breach;
+	float repaired;
+	float repairRequired;
+	float decayRate;
+
+	//Combat
 	int damage;
 	int weapon_type;
 
@@ -53,7 +60,16 @@ public:
 	int& getHpMax();
 	int& getShield();
 	int& getShieldMax();
+
+	bool& getHullBreach();
+	float& getRepaired();
+	float& getRepairRequired();
+
 	int& getDamage();
+	
+	void receivedDamage(int damage);
+
+	void receivedWorldDamage(int damage);
 
 	void updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position, float deltaTime);
 

@@ -33,6 +33,7 @@ private:
 
 public:
 	int& getHp();
+	int& getLevel();
 	sf::Sprite& getEnemy();
 	sf::FloatRect getGlobalBounds();
 

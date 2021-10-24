@@ -5,6 +5,11 @@ int& Enemy::getHp()
 	return this->hp;
 }
 
+int& Enemy::getLevel()
+{
+	return this->level;
+}
+
 sf::Sprite& Enemy::getEnemy()
 {
 	return this->enemy_sprite;
