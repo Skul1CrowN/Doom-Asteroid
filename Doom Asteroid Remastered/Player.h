@@ -22,13 +22,18 @@ private:
 
 	//Stat
 	int integrity;
+	int maxIntegrity;
 	int hp;
 	int maxHp;
+	int shield;
+	int maxShield;
+
 	int damage;
-	float speed;
 	int weapon_type;
+
+	float speed;
+	
 	int score;
-	bool is_immobility;
 
 	//Mormal Bullet
 	std::vector<Bullet> bullets;
@@ -42,6 +47,12 @@ public:
 
 	std::vector<Bullet>& get_bullets();
 	sf::FloatRect getGlobalBounds();
+	int& getIntegrity();
+	int& getMaxIntegrity();
+	int& getHp();
+	int& getHpMax();
+	int& getShield();
+	int& getShieldMax();
 	int& getDamage();
 
 	void updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position, float deltaTime);

@@ -9,12 +9,36 @@ private:
 	//Backgroud
 	sf::RenderWindow* window;
 
+	//Font
+	sf::Font font;
+
 	//Mouse Position
 	sf::Vector2f mouse_position;
 
 	//Player
 	sf::Texture player_texture;
 	std::vector<Player> player;
+
+	//Player UI
+	
+	//HP
+	sf::Texture hp_texture;
+	sf::Sprite hp_icon;
+	sf::Text hp_indicator;
+	sf::RectangleShape hpBar;
+	sf::RectangleShape hpBarMax;
+	//Shield
+	sf::Texture shield_texture;
+	sf::Sprite shield_icon;
+	sf::Text shield_indicator;
+	sf::RectangleShape shieldBar;
+	sf::RectangleShape shieldBarMax;
+	//Integrity
+	sf::Texture world_texture;
+	sf::Sprite world_icon;
+	sf::Text integrity_indicator;
+	sf::RectangleShape integrityBar;
+	sf::RectangleShape integrityBarMax;
 
 	//Bullet
 	std::vector<Bullet> bullets;
@@ -30,6 +54,9 @@ private:
 
 public:
 	Game(sf::RenderWindow* window);
+
+	void InitUI();
+	void UpdateUI(int i);
 
 	void UpdateMousePos(sf::RenderWindow* window);
 

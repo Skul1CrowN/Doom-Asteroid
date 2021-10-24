@@ -57,7 +57,7 @@ void Enemy::updateEnemy(float deltaTime)
 	if (this->level == 10)
 	{
 		//Phase Change
-		this->phase += (int)(deltaTime * 1000.f);
+		this->phase += (int)(deltaTime * 1500.f);
 		this->phase %= 540;
 
 		//Red

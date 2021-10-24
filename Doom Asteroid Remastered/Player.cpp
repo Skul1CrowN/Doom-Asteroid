@@ -10,14 +10,18 @@ Player::Player(sf::Texture* texture)
 	this->player_sprite.setScale(sf::Vector2f(0.15f, 0.15f));
 	this->player_sprite.setPosition(sf::Vector2f(50.f, 540.f));
 	this->angle = 0;
-	this->integrity = 1000;
 
-	this->maxHp = 100;
+	this->maxIntegrity = 1000;
+	this->integrity = 658;
+	this->maxHp = 20;
 	this->hp = this->maxHp;
+	this->maxShield = 10;
+	this->shield = 0;
+	
 	this->damage = 1;
-	this->speed = 1.f;
 	this->weapon_type = 1;
-	this->is_immobility = 0;
+
+	this->speed = 1.f;
 
 	this->maxDelayShoot = 0.35f;
 	this->delayShoot = this->maxDelayShoot;
@@ -33,6 +37,36 @@ std::vector<Bullet>& Player::get_bullets()
 sf::FloatRect Player::getGlobalBounds()
 {
 	return this->player_sprite.getGlobalBounds();
+}
+
+int& Player::getIntegrity()
+{
+	return this->integrity;
+}
+
+int& Player::getMaxIntegrity()
+{
+	return this->maxIntegrity;
+}
+
+int& Player::getHp()
+{
+	return this->hp;
+}
+
+int& Player::getHpMax()
+{
+	return this->maxHp;
+}
+
+int& Player::getShield()
+{
+	return this->shield;
+}
+
+int& Player::getShieldMax()
+{
+	return this->maxShield;
 }
 
 int& Player::getDamage()
