@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
+#include "Item.h"
 
 class Game
 {
@@ -18,6 +19,7 @@ private:
 	//Player
 	sf::Texture player_texture;
 	std::vector<Player> player;
+	bool world_alive;
 
 	//Player UI
 	
@@ -54,6 +56,10 @@ private:
 	sf::Texture enemy_texture[6];
 	int maxEnemies;
 	float enemy_speed;
+
+	//Items
+	std::vector<Item> items;
+	sf::Texture item_texture[6];
 
 	float delaySpawn;
 	float maxDelaySpawn;

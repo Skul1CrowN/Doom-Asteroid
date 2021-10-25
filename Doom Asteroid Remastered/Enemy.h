@@ -18,7 +18,9 @@ private:
 	int maxHp;
 	int hp;
 	int level;
-
+	int type;
+	
+	int move_phase;
 	float speed;
 	int score;
 
@@ -29,19 +31,20 @@ private:
 	int red;
 	int green;
 	int blue;
-	int phase; //degree
+	int color_phase; //degree
 
 public:
 	int& getHp();
 	int& getLevel();
 	sf::Sprite& getEnemy();
 	sf::FloatRect getGlobalBounds();
+	sf::Vector2f getPosition();
 
-	Enemy(sf::Texture* enemy_texture, int maxHp, int level, float speed, int score, sf::Vector2f enemy_position, float scale);
+	Enemy(sf::Texture* enemy_texture, int maxHp, int level, float speed, int score, sf::Vector2f enemy_position, float scale, int type);
 
 	void receiveDamage(int damage);
 
-	void updateEnemy(float deltaTime);
+	void updateEnemy(sf::RenderWindow* window, float deltaTime);
 
 	void renderEnemies(sf::RenderTarget& target);
 };

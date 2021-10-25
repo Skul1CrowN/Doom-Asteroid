@@ -11,6 +11,7 @@ Game::Game(sf::RenderWindow* window)
 	//Player
 	this->player_texture.loadFromFile("Images/Spaceship.png");
 	this->player.push_back(Player(&player_texture));
+	this->world_alive = 1;
 
 	//Enemy
 	this->enemy_texture[0].loadFromFile("Images/Red Asteroid.png");
@@ -24,7 +25,16 @@ Game::Game(sf::RenderWindow* window)
 	this->maxDelaySpawn = 1.f;
 	this->delaySpawn = this->maxDelaySpawn;
 	this->enemy_speed = 300.f;
+	
+	//Items
+	this->item_texture[0].loadFromFile("Images/Item_HP.png");
+	this->item_texture[1].loadFromFile("Images/Item_Shield.png");
+	this->item_texture[2].loadFromFile("Images/Laser_Item.png");
+	this->item_texture[3].loadFromFile("Images/Rocket_Item.png");
+	this->item_texture[4].loadFromFile("Images/TriCannon_Item.png");
+	this->item_texture[5].loadFromFile("Images/Mine_Item.png");
 
+	//UI
 	this->InitUI();
 }
 
@@ -163,6 +173,7 @@ void Game::UpdateMousePos(sf::RenderWindow* window)
 void Game::SpawnEnemy()
 {
 	int spawn_normal = rand() % 6;
+	int spawn_type = rand() % 3;
 	int level_stat[] = { 1,2,3,4,5,10 };
 	int hp_stat[] = { 1,2,3,4,5,10 };
 	int score_stat[] = { 10,20,30,40,50,500 };
@@ -170,78 +181,179 @@ void Game::SpawnEnemy()
 	float scale = (float)rand_scale / 100;
 	int rand_posY = rand() % (window->getSize().y - (int)(120 * scale)) + (int)(60 * scale);
 	sf::Vector2f enemy_pos = sf::Vector2f(window->getSize().x, rand_posY);
-	this->enemies.push_back(Enemy(&enemy_texture[spawn_normal], hp_stat[spawn_normal], level_stat[spawn_normal], enemy_speed, score_stat[spawn_normal],enemy_pos,scale));
+	this->enemies.push_back(Enemy(&enemy_texture[spawn_normal], hp_stat[spawn_normal], level_stat[spawn_normal], enemy_speed, score_stat[spawn_normal],enemy_pos,scale,spawn_type));
 }
 
 void Game::Update(float deltaTime)
 {
 	this->UpdateMousePos(window);
 
-	//Spawn Enemy
-	if (this->delaySpawn >= this->maxDelaySpawn && enemies.size() < this->maxEnemies)
+	if (world_alive)
 	{
-		this->SpawnEnemy();
-		this->delaySpawn = 0;
-	}
-
-	//Player Update
-	for (int i = 0; i < player.size(); i++)
-	{
-		//UpdateUI
-		this->UpdateUI(i);
-		this->player[i].updatePlayer(window, mouse_position, deltaTime);
-		//Bullet Update
-		for (int j = 0; j < player[i].get_bullets().size(); j++)
+		//Spawn Enemy
+		if (this->delaySpawn >= this->maxDelaySpawn && enemies.size() < this->maxEnemies)
 		{
-			this->player[i].get_bullets()[j].updateBullet();
-			//Bullet vs Enemy
-			for (int k = 0; k < enemies.size(); k++)
+			this->SpawnEnemy();
+			this->delaySpawn = 0;
+		}
+
+		//Player Update
+		for (int i = 0; i < player.size(); i++)
+		{
+			//UpdateUI
+			this->UpdateUI(i);
+			this->player[i].updatePlayer(window, mouse_position, deltaTime);
+			//Bullet Update
+			for (int j = 0; j < player[i].get_bullets().size(); j++)
 			{
-				if (this->player[i].get_bullets()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()))
+				this->player[i].get_bullets()[j].updateBullet();
+				//Bullet vs Enemy
+				for (int k = 0; k < enemies.size(); k++)
+				{
+					if (this->player[i].get_bullets()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()))
+					{
+						this->player[i].get_bullets().erase(this->player[i].get_bullets().begin() + j);
+						if (this->enemies[k].getHp() > 0)
+							this->enemies[k].receiveDamage(this->player[i].getDamage());
+						if (this->enemies[k].getHp() <= 0)
+						{
+							//Item Spawn
+							if (this->enemies[k].getLevel() == 10)
+							{
+								int item_type = rand() % 6;
+								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+							}
+							else
+							{
+								int item_chance = rand() % 100 + 1;
+								if (item_chance <= 15)
+								{
+									int item_type = rand() % 6;
+									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+								}
+							}
+							this->enemies.erase(this->enemies.begin() + k);
+						}
+						return;
+					}
+				}
+				//Window Check
+				if (this->player[i].get_bullets()[j].get_position().x > this->window->getSize().x || this->player[i].get_bullets()[j].get_position().x < 0 || this->player[i].get_bullets()[j].get_position().y > this->window->getSize().y || this->player[i].get_bullets()[j].get_position().y < 0)
 				{
 					this->player[i].get_bullets().erase(this->player[i].get_bullets().begin() + j);
-					if (this->enemies[k].getHp() > 0)
-						this->enemies[k].receiveDamage(this->player[i].getDamage());
-					if (this->enemies[k].getHp() <= 0)
-						this->enemies.erase(this->enemies.begin() + k);
 					return;
 				}
 			}
-			//Window Check
-			if (this->player[i].get_bullets()[j].get_position().x > this->window->getSize().x || this->player[i].get_bullets()[j].get_position().x < 0 || this->player[i].get_bullets()[j].get_position().y > this->window->getSize().y || this->player[i].get_bullets()[j].get_position().y < 0)
+			//Laser Update
+			for (int j = 0; j < player[i].get_lasers().size(); j++)
 			{
-				this->player[i].get_bullets().erase(this->player[i].get_bullets().begin() + j);
-				return;
+				this->player[i].get_lasers()[j].updateLaser();
+				//Laser vs Enemy
+				for (int k = 0; k < enemies.size(); k++)
+				{
+					if (this->player[i].get_lasers()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()))
+					{
+						this->player[i].get_lasers().erase(this->player[i].get_lasers().begin() + j);
+						if (this->enemies[k].getHp() > 0)
+							this->enemies[k].receiveDamage(this->player[i].getDamage());
+						if (this->enemies[k].getHp() <= 0)
+						{
+							//Item Spawn
+							if (this->enemies[k].getLevel() == 10)
+							{
+								int item_type = rand() % 6;
+								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+							}
+							else
+							{
+								int item_chance = rand() % 100 + 1;
+								if (item_chance <= 15)
+								{
+									int item_type = rand() % 6;
+									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+								}
+							}
+							this->enemies.erase(this->enemies.begin() + k);
+						}
+						return;
+					}
+				}
+				//Window Check
+				if (this->player[i].get_lasers()[j].get_position().x > this->window->getSize().x || this->player[i].get_lasers()[j].get_position().x < 0 || this->player[i].get_lasers()[j].get_position().y > this->window->getSize().y || this->player[i].get_lasers()[j].get_position().y < 0)
+				{
+					this->player[i].get_lasers().erase(this->player[i].get_lasers().begin() + j);
+					return;
+				}
 			}
+			//World Integrity Check
+			if (this->player[i].getIntegrity() <= 0)
+				this->world_alive = 0;
 		}
-	}
 
-	//Update Enemy
-	for (int i = 0; i < enemies.size(); i++)
-	{
-		this->enemies[i].updateEnemy(deltaTime);
-		for (int j = 0; j < player.size(); j++)
+		//Update Enemy
+		for (int i = 0; i < enemies.size(); i++)
 		{
-			// Enemy vs Player
-			if (this->enemies[i].getGlobalBounds().intersects(this->player[j].getGlobalBounds()) && !this->player[j].getHullBreach())
+			this->enemies[i].updateEnemy(window, deltaTime);
+			for (int j = 0; j < player.size(); j++)
 			{
-				this->player[j].receivedDamage(this->enemies[i].getLevel());
-				this->enemies.erase(this->enemies.begin() + i);
-				return;
-			}
-			//Window Check(World Crushed)
-			if (enemies[i].getEnemy().getPosition().x < 0)
-			{
-				this->player[j].receivedWorldDamage(this->enemies[i].getLevel());
-				this->enemies.erase(this->enemies.begin() + i);
-				return;
+				// Enemy vs Player
+				if (this->enemies[i].getGlobalBounds().intersects(this->player[j].getGlobalBounds()) && !this->player[j].getHullBreach())
+				{
+					this->player[j].receivedDamage(this->enemies[i].getLevel());
+					this->enemies.erase(this->enemies.begin() + i);
+					return;
+				}
+				//Window Check(World Crushed)
+				if (enemies[i].getEnemy().getPosition().x < 0)
+				{
+					this->player[j].receivedWorldDamage(this->enemies[i].getLevel());
+					this->enemies.erase(this->enemies.begin() + i);
+					return;
+				}
 			}
 		}
-	}
 
-	//Update Time
-	if (this->delaySpawn < this->maxDelaySpawn)
-		this->delaySpawn += deltaTime;
+		//Update Items
+		for (int i = 0; i < items.size(); i++)
+		{
+			//Item vs Player
+			for (int j = 0; j < player.size(); j++)
+			{
+				if (this->player[j].getGlobalBounds().intersects(this->items[i].getGlobalBounds()))
+				{
+					switch (this->items[i].getItem())
+					{
+					case 0: // Repair
+						this->player[j].repairHP(15);
+						break;
+					case 1: // Shield
+						this->player[j].receivedShield(10);
+						break;
+					case 2: // Laser Ammo
+						this->player[j].gainLaserAmmo(5);
+						break;
+					case 3:
+						break;
+					case 4:
+						break;
+					case 5:
+						break;
+					case 6:
+						break;
+					default:
+						break;
+					}
+					this->items.erase(this->items.begin() + i);
+					return;
+				}
+			}
+		}
+
+		//Update Time
+		if (this->delaySpawn < this->maxDelaySpawn)
+			this->delaySpawn += deltaTime;
+
+	}
 }
 
 void Game::Render()
@@ -252,12 +364,15 @@ void Game::Render()
 	for (int i = 0; i < this->player.size(); i++)
 		this->player[i].renderPlayer(*this->window);
 
+	//Item
+	for (int i = 0; i < this->items.size(); i++)
+		this->items[i].renderItem(*this->window);
+
 	//Enemy Asteroid
 	for (int i = 0; i < this->enemies.size(); i++)
 		this->enemies[i].renderEnemies(*this->window);
-
 	
-	//Playre UI
+	//Player UI
 	for (int i = 0; i < this->player.size(); i++)
 	{
 		if (!this->player[i].getHullBreach())
@@ -287,6 +402,12 @@ void Game::Render()
 	this->window->draw(integrity_indicator);
 	this->window->draw(integrityBarMax);
 	this->window->draw(integrityBar);
+
+	//Game Over Scene
+	if (!this->world_alive)
+	{
+		this->window->clear();
+	}
 	
 	this->window->display();
 }

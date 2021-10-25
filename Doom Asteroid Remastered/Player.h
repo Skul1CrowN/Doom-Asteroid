@@ -7,6 +7,7 @@
 
 #include<iostream>
 #include "Bullet.h"
+#include "Laser.h"
 
 class Player
 {
@@ -37,6 +38,11 @@ private:
 	//Combat
 	int damage;
 	int weapon_type;
+	// 1 Normal GUn
+	// 2 Laser Shot
+	// 3 Rocket Launcher
+	// 4 Tri-Cannon Gun
+	// 5 Mine Launcher
 
 	float speed;
 	
@@ -44,7 +50,10 @@ private:
 
 	//Mormal Bullet
 	std::vector<Bullet> bullets;
-	int normal_damage = 1;
+
+	//Laser Shot
+	std::vector<Laser> lasers;
+	int laser_ammo;
 
 	//Time
 	float delayShoot;
@@ -53,7 +62,9 @@ public:
 	Player(sf::Texture* texture);
 
 	std::vector<Bullet>& get_bullets();
+	std::vector<Laser>& get_lasers();
 	sf::FloatRect getGlobalBounds();
+	sf::Vector2f getPosition();
 	int& getIntegrity();
 	int& getMaxIntegrity();
 	int& getHp();
@@ -67,6 +78,12 @@ public:
 
 	int& getDamage();
 	
+	void repairHP(int hp);
+
+	void receivedShield(int shield);
+
+	void gainLaserAmmo(int amount);
+
 	void receivedDamage(int damage);
 
 	void receivedWorldDamage(int damage);
