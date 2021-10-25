@@ -16,9 +16,10 @@ private:
 	//0 Repair
 	//1 Shield
 	//2 Laser Ammo
-	//3 Rocket Ammo
-	//4 Tri-Cannon Ammo
-	//5 Mine Ammo
+	//3 Plasma Ammo
+	//4 Rocket Ammo
+	//5 Tri-Cannon Ammo
+	//6 Mine Ammo
 public:
 	Item(sf::Texture* texture,sf::Vector2f init_position,int type);
 

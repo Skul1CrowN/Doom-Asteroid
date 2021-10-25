@@ -8,6 +8,7 @@
 #include<iostream>
 #include "Bullet.h"
 #include "Laser.h"
+#include "Plasma.h"
 
 class Player
 {
@@ -28,6 +29,7 @@ private:
 	int maxHp;
 	int shield;
 	int maxShield;
+	float speed;
 
 	//Hull Breach
 	bool hull_breach;
@@ -38,15 +40,15 @@ private:
 	//Combat
 	int damage;
 	int weapon_type;
+	//Time
+	float delayShoot;
+	float maxDelayShoot;
 	// 1 Normal GUn
 	// 2 Laser Shot
-	// 3 Rocket Launcher
-	// 4 Tri-Cannon Gun
-	// 5 Mine Launcher
-
-	float speed;
-	
-	int score;
+	// 3 Plasma Gun
+	// 4 Rocket Launcher
+	// 5 Tri-Cannon Gun
+	// 6 Mine Launcher
 
 	//Mormal Bullet
 	std::vector<Bullet> bullets;
@@ -55,14 +57,15 @@ private:
 	std::vector<Laser> lasers;
 	int laser_ammo;
 
-	//Time
-	float delayShoot;
-	float maxDelayShoot;
+	//Plasma Gun
+	std::vector<Plasma> plasmas;
+	int plasma_ammo;
 public:
 	Player(sf::Texture* texture);
 
 	std::vector<Bullet>& get_bullets();
 	std::vector<Laser>& get_lasers();
+	std::vector<Plasma>& get_plasmas();
 	sf::FloatRect getGlobalBounds();
 	sf::Vector2f getPosition();
 	int& getIntegrity();
@@ -83,6 +86,8 @@ public:
 	void receivedShield(int shield);
 
 	void gainLaserAmmo(int amount);
+
+	void gainPlasmaAmmo(int amount);
 
 	void receivedDamage(int damage);
 

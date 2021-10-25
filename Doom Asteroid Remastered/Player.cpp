@@ -26,13 +26,12 @@ Player::Player(sf::Texture* texture)
 	this->damage = 1;
 	this->weapon_type = 1;
 	this->laser_ammo = 0;
+	this->plasma_ammo = 0;
 
 	this->speed = 500.f;
 
 	this->maxDelayShoot = 0.35f;
 	this->delayShoot = this->maxDelayShoot;
-
-	this->score = 0;
 }
 
 std::vector<Bullet>& Player::get_bullets()
@@ -43,6 +42,11 @@ std::vector<Bullet>& Player::get_bullets()
 std::vector<Laser>& Player::get_lasers()
 {
 	return this->lasers;
+}
+
+std::vector<Plasma>& Player::get_plasmas()
+{
+	return this->plasmas;
 }
 
 sf::FloatRect Player::getGlobalBounds()
@@ -122,6 +126,11 @@ void Player::receivedShield(int shield)
 void Player::gainLaserAmmo(int amount)
 {
 	this->laser_ammo += amount;
+}
+
+void Player::gainPlasmaAmmo(int amount)
+{
+	this->plasma_ammo += amount;
 }
 
 void Player::receivedDamage(int damage)
@@ -217,6 +226,15 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 					this->lasers.push_back(Laser(player_position, angle));
 				}
 				break;
+			case 3:
+				if (this->plasma_ammo > 0)
+				{
+					this->plasma_ammo--;
+					this->plasmas.push_back(Plasma(player_position, angle));
+				}
+				break;
+			default:
+				break;
 			}
 			this->delayShoot = 0;
 		}
@@ -234,6 +252,13 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.55f;
 			this->maxDelayShoot = 0.55f;
 			this->damage = 5;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) && this->plasma_ammo > 0)
+		{
+			this->weapon_type = 3;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.1f;
+			this->maxDelayShoot = 0.1f;
+			this->damage = 1;
 		}
 	}
 
@@ -279,6 +304,10 @@ void Player::renderPlayer(sf::RenderTarget& target)
 	for (int i = 0; i < this->lasers.size(); i++)
 	{
 		this->lasers[i].renderLaser(target);
+	}
+	for(int i = 0;i < this->plasmas.size();i++)
+	{
+		this->plasmas[i].renderPlasma(target);
 	}
 	target.draw(player_sprite);
 }

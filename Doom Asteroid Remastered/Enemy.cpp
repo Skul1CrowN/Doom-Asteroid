@@ -10,6 +10,11 @@ int& Enemy::getLevel()
 	return this->level;
 }
 
+int& Enemy::getScore()
+{
+	return this->score;
+}
+
 sf::Sprite& Enemy::getEnemy()
 {
 	return this->enemy_sprite;
@@ -73,7 +78,7 @@ void Enemy::updateEnemy(sf::RenderWindow* window,float deltaTime)
 		this->move_phase %= 360;
 		this->enemy_sprite.rotate(0.5f * speed * deltaTime);
 		this->enemy_sprite.move(sf::Vector2f(- speed * deltaTime, speed * sin(this->move_phase * 3.141592 / 180)* deltaTime));
-		if (this->enemy_sprite.getPosition().y < 0 || this->enemy_sprite.getPosition().y > window->getSize().y)
+		if (this->enemy_sprite.getPosition().y - this->getGlobalBounds().height / 2 < 0 || this->enemy_sprite.getPosition().y + this->getGlobalBounds().height / 2 > window->getSize().y)
 			this->move_phase = -this->move_phase;
 	}
 	else if (this->type == 2)//Inverse Sine Wave
@@ -82,7 +87,7 @@ void Enemy::updateEnemy(sf::RenderWindow* window,float deltaTime)
 		this->move_phase %= 360;
 		this->enemy_sprite.rotate(0.5f * speed * deltaTime);
 		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, -speed * sin(this->move_phase * 3.141592 / 180) * deltaTime));
-		if (this->enemy_sprite.getPosition().y < 0 || this->enemy_sprite.getPosition().y > window->getSize().y)
+		if (this->enemy_sprite.getPosition().y - this->getGlobalBounds().height/2< 0 || this->enemy_sprite.getPosition().y + this->getGlobalBounds().height / 2 > window->getSize().y)
 			this->move_phase = -this->move_phase;
 	}
 

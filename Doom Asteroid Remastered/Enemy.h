@@ -36,6 +36,7 @@ private:
 public:
 	int& getHp();
 	int& getLevel();
+	int& getScore();
 	sf::Sprite& getEnemy();
 	sf::FloatRect getGlobalBounds();
 	sf::Vector2f getPosition();

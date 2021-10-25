@@ -59,10 +59,15 @@ private:
 
 	//Items
 	std::vector<Item> items;
-	sf::Texture item_texture[6];
+	sf::Texture item_texture[7];
 
+	//Enemy Time
 	float delaySpawn;
 	float maxDelaySpawn;
+
+	//Score
+	int score;
+	sf::Text score_text;
 
 public:
 	Game(sf::RenderWindow* window);
