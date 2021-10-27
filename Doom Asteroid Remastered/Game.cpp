@@ -10,7 +10,9 @@ Game::Game(sf::RenderWindow* window)
 
 	//Player
 	this->player_texture.loadFromFile("Images/Spaceship.png");
-	this->player.push_back(Player(&player_texture));
+	this->rocket_texture.loadFromFile("Images/Rocket.png");
+	this->mine_texture.loadFromFile("Images/Mine.png");
+	this->player.push_back(Player(&player_texture,&rocket_texture,&mine_texture));
 	this->world_alive = 1;
 
 	//Enemy
@@ -35,6 +37,20 @@ Game::Game(sf::RenderWindow* window)
 	this->item_texture[5].loadFromFile("Images/TriCannon_Item.png");
 	this->item_texture[6].loadFromFile("Images/Mine_Item.png");
 
+	//Weapon Icon
+	this->weapon_texture[0].loadFromFile("Images/Normal_Item.png");
+	this->weapon_texture[1].loadFromFile("Images/Laser_Item.png");
+	this->weapon_texture[2].loadFromFile("Images/Plasma_Item.png");
+	this->weapon_texture[3].loadFromFile("Images/Rocket_Item.png");
+	this->weapon_texture[4].loadFromFile("Images/TriCannon_Item.png");
+	this->weapon_texture[5].loadFromFile("Images/Mine_Item.png");
+
+	this->weapon_disabled[0].loadFromFile("Images/Laser_Item_Disabled.png");
+	this->weapon_disabled[1].loadFromFile("Images/Plasma_Item_Disabled.png");
+	this->weapon_disabled[2].loadFromFile("Images/Rocket_Item_Disabled.png");
+	this->weapon_disabled[3].loadFromFile("Images/TriCannon_Item_Disabled.png");
+	this->weapon_disabled[4].loadFromFile("Images/Mine_Item_Disabled.png");
+
 	//Score
 	this->score = 0;
 	
@@ -51,8 +67,8 @@ void Game::InitUI()
 
 	this->hp_texture.loadFromFile("Images/HP.png");
 	this->hp_icon.setTexture(this->hp_texture);
-	this->hp_icon.setScale(sf::Vector2f(0.10f, 0.10f));
-	this->hp_icon.setPosition(50.f, 50.f);
+	this->hp_icon.setScale(sf::Vector2f(0.08f, 0.08f));
+	this->hp_icon.setPosition(50.f, 47.f);
 
 	this->hpBar.setPosition(50.f, 70.f);
 
@@ -61,13 +77,13 @@ void Game::InitUI()
 
 	//Shield UI
 	this->shield_indicator.setFont(this->font);
-	this->shield_indicator.setPosition(140.f, 45.f);
+	this->shield_indicator.setPosition(150.f, 45.f);
 	this->shield_indicator.setCharacterSize(16);
 
 	this->shield_texture.loadFromFile("Images/Shield.png");
-	this->shield_icon.setTexture(this->hp_texture);
-	this->shield_icon.setScale(sf::Vector2f(0.10f, 0.10f));
-	this->shield_icon.setPosition(50.f, 50.f);
+	this->shield_icon.setTexture(this->shield_texture);
+	this->shield_icon.setScale(sf::Vector2f(0.08f, 0.08f));
+	this->shield_icon.setPosition(130.f, 47.f);
 
 	this->shieldBar.setFillColor(sf::Color(102, 178, 255));
 	this->shieldBar.setPosition(50.f, 65.f);
@@ -123,6 +139,25 @@ void Game::InitUI()
 	this->score_text.setPosition(1750.f - this->score_text.getLocalBounds().width, 50.f);
 	this->score_text.setCharacterSize(20);
 	this->score_text.setFillColor(sf::Color(255, 255, 255));
+
+	//Weapon UI
+	this->weapon_name.setFont(this->font);
+	this->weapon_name.setPosition(110.f, 100.f);
+	this->weapon_name.setCharacterSize(18);
+
+	this->ammo_amount.setFont(this->font);
+	this->ammo_amount.setPosition(110.f, 120.f);
+	this->ammo_amount.setCharacterSize(18);
+
+	this->weapon_icon.setScale(sf::Vector2f(0.7f, 0.7f));
+	this->weapon_icon.setPosition(50.f, 100.f);
+
+	this->weapon_selection[0].setTexture(this->weapon_texture[0]);
+	this->weapon_selection[1].setTexture(this->weapon_disabled[0]);
+	this->weapon_selection[2].setTexture(this->weapon_disabled[1]);
+	this->weapon_selection[3].setTexture(this->weapon_disabled[2]);
+	this->weapon_selection[4].setTexture(this->weapon_disabled[3]);
+	this->weapon_selection[5].setTexture(this->weapon_disabled[4]);
 }
 
 void Game::UpdateUI(int i)
@@ -133,6 +168,7 @@ void Game::UpdateUI(int i)
 	{
 		this->hp_indicator.setFillColor(sf::Color(51, 255, 51));
 
+		this->hp_icon.setColor(sf::Color(51, 255, 51));
 		this->hpBar.setSize( sf::Vector2f(300.f * ((float)this->player[i].getHp() / this->player[i].getHpMax()) ,10.f));
 		this->hpBar.setFillColor(sf::Color(51, 255, 51));
 
@@ -142,6 +178,7 @@ void Game::UpdateUI(int i)
 	{
 		this->hp_indicator.setFillColor(sf::Color(255, 255, 51));
 
+		this->hp_icon.setColor(sf::Color(255, 255, 51));
 		this->hpBar.setSize(sf::Vector2f(300.f * ((float)this->player[i].getHp() / this->player[i].getHpMax()), 10.f));
 		this->hpBar.setFillColor(sf::Color(255, 255, 51));
 
@@ -151,6 +188,7 @@ void Game::UpdateUI(int i)
 	{
 		this->hp_indicator.setFillColor(sf::Color(255, 51, 51));
 
+		this->hp_icon.setColor(sf::Color(255, 51, 51));
 		this->hpBar.setSize(sf::Vector2f(300.f * ((float)this->player[i].getHp() / this->player[i].getHpMax()), 10.f));
 		this->hpBar.setFillColor(sf::Color(255, 51, 51));
 
@@ -160,9 +198,15 @@ void Game::UpdateUI(int i)
 	//Shield Bar
 	this->shield_indicator.setString(std::to_string(this->player[i].getShield()));
 	if (this->player[i].getShield() == 0)
+	{
+		this->shield_icon.setColor(sf::Color(0, 76, 153));
 		this->shield_indicator.setFillColor(sf::Color(0, 76, 153));
+	}
 	else
+	{
+		this->shield_icon.setColor(sf::Color(102, 178, 255));
 		this->shield_indicator.setFillColor(sf::Color(102, 178, 255));
+	}
 	this->shieldBar.setSize(sf::Vector2f(300.f * ((float)this->player[i].getShield() / this->player[i].getShieldMax()), 5.f));
 
 	//Integrity Bar
@@ -176,6 +220,64 @@ void Game::UpdateUI(int i)
 
 	//Score
 	this->score_text.setString(std::to_string(this->score));
+
+	//Weapon UI
+	switch (this->player[i].getWeaponType())
+	{
+	case 1:
+		this->weapon_icon.setTexture(this->weapon_texture[0]);
+		this->weapon_name.setString("Normal Gun");
+		this->ammo_amount.setString("");
+		break;
+	case 2:
+		this->weapon_icon.setTexture(this->weapon_texture[1]);
+		this->weapon_name.setString("Laser Shot");
+		this->ammo_amount.setString(std::to_string(this->player[i].getLaserAmmo()));
+		if (this->player[i].getLaserAmmo() <= 0)
+			this->ammo_amount.setFillColor(sf::Color(255, 51, 51));
+		else
+			this->ammo_amount.setFillColor(sf::Color(255, 255, 255));
+		break;
+	case 3:
+		this->weapon_icon.setTexture(this->weapon_texture[2]);
+		this->weapon_name.setString("Plasma Gun");
+		this->ammo_amount.setString(std::to_string(this->player[i].getPlasmaAmmo()));
+		if (this->player[i].getPlasmaAmmo() <= 0)
+			this->ammo_amount.setFillColor(sf::Color(255, 51, 51));
+		else
+			this->ammo_amount.setFillColor(sf::Color(255, 255, 255));
+		break;
+	case 4:
+		this->weapon_icon.setTexture(this->weapon_texture[3]);
+		this->weapon_name.setString("Rocket Launcher");
+		this->ammo_amount.setString(std::to_string(this->player[i].getRocketAmmo()));
+		if (this->player[i].getRocketAmmo() <= 0)
+			this->ammo_amount.setFillColor(sf::Color(255, 51, 51));
+		else
+			this->ammo_amount.setFillColor(sf::Color(255, 255, 255));
+		break;
+	case 5:
+		this->weapon_icon.setTexture(this->weapon_texture[4]);
+		this->weapon_name.setString("Tri Cannon");
+		this->ammo_amount.setString(std::to_string(this->player[i].getTriAmmo()));
+		if (this->player[i].getTriAmmo() <= 0)
+			this->ammo_amount.setFillColor(sf::Color(255, 51, 51));
+		else
+			this->ammo_amount.setFillColor(sf::Color(255, 255, 255));
+		break;
+	case 6:
+		this->weapon_icon.setTexture(this->weapon_texture[5]);
+		this->weapon_name.setString("Mine Launcher");
+		this->ammo_amount.setString(std::to_string(this->player[i].getMineAmmo()));
+		if (this->player[i].getMineAmmo() <= 0)
+			this->ammo_amount.setFillColor(sf::Color(255, 51, 51));
+		else
+			this->ammo_amount.setFillColor(sf::Color(255, 255, 255));
+		break;
+	default:
+		break;
+	}	
+
 }
 
 void Game::UpdateMousePos(sf::RenderWindow* window)
@@ -186,10 +288,10 @@ void Game::UpdateMousePos(sf::RenderWindow* window)
 void Game::SpawnEnemy()
 {
 	int spawn_normal = rand() % 6;
-	int spawn_type = rand() % 3;
+	int spawn_type = rand() % 4;
 	int level_stat[] = { 1,2,3,4,5,10 };
 	int hp_stat[] = { 1,2,3,4,5,10 };
-	int score_stat[] = { 10,20,30,40,50,500 };
+	int score_stat[] = { 10,20,30,40,50,200 };
 	int rand_scale = rand() % 65 + 40;
 	float scale = (float)rand_scale / 100;
 	int rand_posY = rand() % (window->getSize().y - (int)(120 * scale)) + (int)(60 * scale);
@@ -200,7 +302,7 @@ void Game::SpawnEnemy()
 void Game::Update(float deltaTime)
 {
 	this->UpdateMousePos(window);
-
+		
 	if (world_alive)
 	{
 		//Spawn Enemy
@@ -228,7 +330,7 @@ void Game::Update(float deltaTime)
 						this->player[i].get_bullets().erase(this->player[i].get_bullets().begin() + j);
 						//Enemy Take Damage
 						if (this->enemies[k].getHp() > 0)
-							this->enemies[k].receiveDamage(this->player[i].getDamage());
+							this->enemies[k].receiveDamage(this->player[i].getNormalDamage());
 						//Enemy Killed
 						if (this->enemies[k].getHp() <= 0)
 						{
@@ -243,7 +345,7 @@ void Game::Update(float deltaTime)
 							else
 							{
 								int item_chance = rand() % 100 + 1;
-								if (item_chance <= 15)
+								if (item_chance <= 10)
 								{
 									int item_type = rand() % 7;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
@@ -272,21 +374,23 @@ void Game::Update(float deltaTime)
 					{
 						this->player[i].get_lasers().erase(this->player[i].get_lasers().begin() + j);
 						if (this->enemies[k].getHp() > 0)
-							this->enemies[k].receiveDamage(this->player[i].getDamage());
+							this->enemies[k].receiveDamage(this->player[i].getLaserDamage());
 						if (this->enemies[k].getHp() <= 0)
 						{
+							//Update Score
+							this->score += this->enemies[k].getScore();
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 6;
+								int item_type = rand() % 7;
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
 							{
 								int item_chance = rand() % 100 + 1;
-								if (item_chance <= 15)
+								if (item_chance <= 10)
 								{
-									int item_type = rand() % 6;
+									int item_type = rand() % 7;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -306,28 +410,30 @@ void Game::Update(float deltaTime)
 			for (int j = 0; j < player[i].get_plasmas().size(); j++)
 			{
 				this->player[i].get_plasmas()[j].updatePlasma();
-				//Plasmavs Enemy
+				//Plasma vs Enemy
 				for (int k = 0; k < enemies.size(); k++)
 				{
 					if (this->player[i].get_plasmas()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()))
 					{
 						this->player[i].get_plasmas().erase(this->player[i].get_plasmas().begin() + j);
 						if (this->enemies[k].getHp() > 0)
-							this->enemies[k].receiveDamage(this->player[i].getDamage());
+							this->enemies[k].receiveDamage(this->player[i].getPlasmaDamage());
 						if (this->enemies[k].getHp() <= 0)
 						{
+							//Update Score
+							this->score += this->enemies[k].getScore();
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 6;
+								int item_type = rand() % 7;
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
 							{
 								int item_chance = rand() % 100 + 1;
-								if (item_chance <= 15)
+								if (item_chance <= 10)
 								{
-									int item_type = rand() % 6;
+									int item_type = rand() % 7;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -343,6 +449,188 @@ void Game::Update(float deltaTime)
 					return;
 				}
 			}
+			//Rocket Update
+			for (int j = 0; j < player[i].get_rockets().size(); j++)
+			{
+				this->player[i].get_rockets()[j].updateRocket();
+				//Rocket vs Enemy
+				for (int k = 0; k < enemies.size(); k++)
+				{
+					if (this->player[i].get_rockets()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()))
+					{
+						hitted_index = k;
+						this->player[i].explosionFlak(this->enemies[k].getPosition());
+						this->player[i].get_rockets().erase(this->player[i].get_rockets().begin() + j);
+						if (this->enemies[k].getHp() > 0)
+							this->enemies[k].receiveDamage(this->player[i].getRocketDamage());
+						if (this->enemies[k].getHp() <= 0)
+						{
+							//Update Score
+							this->score += this->enemies[k].getScore();
+							//Item Spawn
+							if (this->enemies[k].getLevel() == 10)
+							{
+								int item_type = rand() % 7;
+								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+							}
+							else
+							{
+								int item_chance = rand() % 100 + 1;
+								if (item_chance <= 10)
+								{
+									int item_type = rand() % 7;
+									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+								}
+							}
+							if (k > hitted_index)
+								hitted_index--;
+							if (k == hitted_index)
+								hitted_index = -1;
+							this->enemies.erase(this->enemies.begin() + k);
+						}
+						return;
+					}
+				}
+				//Window Check
+				if (this->player[i].get_rockets()[j].get_position().x > this->window->getSize().x || this->player[i].get_rockets()[j].get_position().x < 0 || this->player[i].get_rockets()[j].get_position().y > this->window->getSize().y || this->player[i].get_rockets()[j].get_position().y < 0)
+				{
+					this->player[i].get_rockets().erase(this->player[i].get_rockets().begin() + j);
+					return;
+				}
+			}
+			//Flak Update
+			for (int j = 0; j < player[i].get_flaks().size(); j++)
+			{
+				this->player[i].get_flaks()[j].updateBullet();
+				//Flak vs Enemy
+				for (int k = 0; k < enemies.size(); k++)
+				{
+					if (this->player[i].get_flaks()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()) && k != hitted_index)
+					{
+						this->player[i].get_flaks().erase(this->player[i].get_flaks().begin() + j);
+						if (this->enemies[k].getHp() > 0)
+							this->enemies[k].receiveDamage(this->player[i].getFlakDamage());
+						if (this->enemies[k].getHp() <= 0)
+						{
+							//Update Score
+							this->score += this->enemies[k].getScore();
+							//Item Spawn
+							if (this->enemies[k].getLevel() == 10)
+							{
+								int item_type = rand() % 7;
+								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+							}
+							else
+							{
+								int item_chance = rand() % 100 + 1;
+								if (item_chance <= 10)
+								{
+									int item_type = rand() % 7;
+									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+								}
+							}
+							this->enemies.erase(this->enemies.begin() + k);
+						}
+						return;
+					}
+				}
+				//Window Check
+				if (this->player[i].get_flaks()[j].get_position().x > this->window->getSize().x || this->player[i].get_flaks()[j].get_position().x < 0 || this->player[i].get_flaks()[j].get_position().y > this->window->getSize().y || this->player[i].get_flaks()[j].get_position().y < 0)
+				{
+					this->player[i].get_flaks().erase(this->player[i].get_flaks().begin() + j);
+					return;
+				}
+			}
+			//Tri Cannon
+			for (int j = 0; j < player[i].get_tricannons().size(); j++)
+			{
+				this->player[i].get_tricannons()[j].updateTriCannon();
+				//Tri Cannon vs Enemy
+				for (int k = 0; k < enemies.size(); k++)
+				{
+					if (this->player[i].get_tricannons()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()))
+					{
+						this->player[i].get_tricannons().erase(this->player[i].get_tricannons().begin() + j);
+						if (this->enemies[k].getHp() > 0)
+							this->enemies[k].receiveDamage(this->player[i].getFlakDamage());
+						if (this->enemies[k].getHp() <= 0)
+						{
+							//Update Score
+							this->score += this->enemies[k].getScore();
+							//Item Spawn
+							if (this->enemies[k].getLevel() == 10)
+							{
+								int item_type = rand() % 7;
+								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+							}
+							else
+							{
+								int item_chance = rand() % 100 + 1;
+								if (item_chance <= 10)
+								{
+									int item_type = rand() % 7;
+									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+								}
+							}
+							this->enemies.erase(this->enemies.begin() + k);
+						}
+						return;
+					}
+				}
+				//Window Check
+				if (this->player[i].get_tricannons()[j].get_position().x > this->window->getSize().x || this->player[i].get_tricannons()[j].get_position().x < 0 || this->player[i].get_tricannons()[j].get_position().y > this->window->getSize().y || this->player[i].get_tricannons()[j].get_position().y < 0)
+				{
+					this->player[i].get_tricannons().erase(this->player[i].get_tricannons().begin() + j);
+					return;
+				}
+			}
+			//Mine Update
+			for(int j = 0; j < player[i].get_mines().size(); j++)
+			{
+				this->player[i].get_mines()[j].updateMine(deltaTime);
+				//Mine vs Enemy
+				for (int k = 0; k < enemies.size(); k++)
+				{
+					if (this->player[i].get_mines()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()))
+					{
+						//Mine Health Update
+						if (this->player[i].get_mines()[j].getHealth() > 0)
+							this->player[i].get_mines()[j].receivedDamage(1);
+						if (this->player[i].get_mines()[j].getHealth() <= 0)
+							this->player[i].get_mines().erase(this->player[i].get_mines().begin() + j);
+
+						if (this->enemies[k].getHp() > 0)
+							this->enemies[k].receiveDamage(this->player[i].getMineDamage());
+						if (this->enemies[k].getHp() <= 0)
+						{
+							//Update Score
+							this->score += this->enemies[k].getScore();
+							//Item Spawn
+							if (this->enemies[k].getLevel() == 10)
+							{
+								int item_type = rand() % 7;
+								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+							}
+							else
+							{
+								int item_chance = rand() % 100 + 1;
+								if (item_chance <= 10)
+								{
+									int item_type = rand() % 7;
+									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+								}
+							}
+							this->enemies.erase(this->enemies.begin() + k);
+						}
+						return;
+					}
+				}
+				if (this->player[i].get_mines()[j].get_position().x > this->window->getSize().x || this->player[i].get_mines()[j].get_position().x < 0 || this->player[i].get_mines()[j].get_position().y > this->window->getSize().y || this->player[i].get_mines()[j].get_position().y < 0)
+				{
+					this->player[i].get_mines().erase(this->player[i].get_mines().begin() + j);
+					return;
+				}
+			}
 			//World Integrity Check
 			if (this->player[i].getIntegrity() <= 0)
 				this->world_alive = 0;
@@ -351,9 +639,9 @@ void Game::Update(float deltaTime)
 		//Update Enemy
 		for (int i = 0; i < enemies.size(); i++)
 		{
-			this->enemies[i].updateEnemy(window, deltaTime);
 			for (int j = 0; j < player.size(); j++)
 			{
+				this->enemies[i].updateEnemy(window, this->player[j].getPosition(), this->player[j].getHullBreach(), deltaTime);
 				// Enemy vs Player
 				if (this->enemies[i].getGlobalBounds().intersects(this->player[j].getGlobalBounds()) && !this->player[j].getHullBreach())
 				{
@@ -388,16 +676,19 @@ void Game::Update(float deltaTime)
 						this->player[j].receivedShield(10);
 						break;
 					case 2: // Laser Ammo
-						this->player[j].gainLaserAmmo(5);
+						this->player[j].gainLaserAmmo(10);
 						break;
 					case 3: // Plasma Ammo
-						this->player[j].gainPlasmaAmmo(50);
+						this->player[j].gainPlasmaAmmo(30);
 						break;
-					case 4:
+					case 4: //Rocket Ammo
+						this->player[j].gainRocketAmmo(3);
 						break;
-					case 5:
+					case 5: //Tri Ammo
+						this->player[j].gainTriAmmo(20);
 						break;
-					case 6:
+					case 6: //Mine Ammo
+						this->player[j].gainMineAmmo(5);
 						break;
 					default:
 						break;
@@ -437,11 +728,13 @@ void Game::Render()
 		if (!this->player[i].getHullBreach())
 		{
 			//HP Bar
+			this->window->draw(hp_icon);
 			this->window->draw(hp_indicator);
 			this->window->draw(hpBarMax);
 			this->window->draw(hpBar);
 
 			//Shield Bar
+			this->window->draw(shield_icon);
 			this->window->draw(shield_indicator);
 			this->window->draw(shieldBarMax);
 			this->window->draw(shieldBar);
@@ -464,6 +757,11 @@ void Game::Render()
 
 	//Score
 	this->window->draw(score_text);
+
+	//Weapon UI
+	this->window->draw(weapon_name);
+	this->window->draw(ammo_amount);
+	this->window->draw(weapon_icon);
 
 	//Game Over Scene
 	if (!this->world_alive)

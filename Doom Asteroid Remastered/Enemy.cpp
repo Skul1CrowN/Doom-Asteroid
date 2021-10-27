@@ -64,32 +64,45 @@ void Enemy::receiveDamage(int damage)
 	this->hp -= damage;
 }
 
-void Enemy::updateEnemy(sf::RenderWindow* window,float deltaTime)
+void Enemy::updateEnemy(sf::RenderWindow* window, sf::Vector2f player_position,bool hull_breach,float deltaTime)
 {
 	//Movement
-	if (this->type == 0)
+	this->enemy_position = this->enemy_sprite.getPosition();
+	if (this->type == 0)//Line
 	{
 		this->enemy_sprite.rotate(0.5f * speed * deltaTime);
 		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, 0));
 	}
 	else if (this->type == 1)//Sine Wave
 	{
-		this->move_phase += (int)(deltaTime * 1000.f);
+		this->move_phase += (int)(deltaTime * 700.f);
 		this->move_phase %= 360;
 		this->enemy_sprite.rotate(0.5f * speed * deltaTime);
-		this->enemy_sprite.move(sf::Vector2f(- speed * deltaTime, speed * sin(this->move_phase * 3.141592 / 180)* deltaTime));
+		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, speed * sin(this->move_phase * 3.141592 / 180)* deltaTime));
 		if (this->enemy_sprite.getPosition().y - this->getGlobalBounds().height / 2 < 0 || this->enemy_sprite.getPosition().y + this->getGlobalBounds().height / 2 > window->getSize().y)
 			this->move_phase = -this->move_phase;
 	}
 	else if (this->type == 2)//Inverse Sine Wave
 	{
-		this->move_phase += (int)(deltaTime * 1000.f);
+		this->move_phase += (int)(deltaTime * 800.f);
 		this->move_phase %= 360;
 		this->enemy_sprite.rotate(0.5f * speed * deltaTime);
 		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, -speed * sin(this->move_phase * 3.141592 / 180) * deltaTime));
 		if (this->enemy_sprite.getPosition().y - this->getGlobalBounds().height/2< 0 || this->enemy_sprite.getPosition().y + this->getGlobalBounds().height / 2 > window->getSize().y)
 			this->move_phase = -this->move_phase;
 	}
+	else if (this->type == 3)//Track Player
+	{
+		this->player_distance = player_position - this->enemy_position;
+		this->pve_angle = atanf(this->player_distance.x / this->player_distance.y);
+		this->enemy_sprite.rotate(0.5f * speed * deltaTime);
+		float distance =  sqrt( pow(this->player_distance.x, 2) + pow(this->player_distance.y, 2) );
+		if(!hull_breach)
+			this->enemy_sprite.move(this->player_distance / distance * speed * deltaTime );
+		else
+			this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, 0));
+	}
+
 
 	//For Fun
 	if (this->level == 10)

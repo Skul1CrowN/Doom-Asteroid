@@ -3,9 +3,10 @@
 #include<cmath>
 #include<iostream>
 
-Player::Player(sf::Texture* texture)
+Player::Player(sf::Texture* texture,sf::Texture* rocket,sf::Texture* mine)
 {
 	this->player_texture = texture;
+	this->mine_texture = mine;
 	this->player_sprite.setTexture(*this->player_texture);
 	this->player_sprite.setScale(sf::Vector2f(0.15f, 0.15f));
 	this->player_sprite.setPosition(sf::Vector2f(50.f, 540.f));
@@ -23,15 +24,28 @@ Player::Player(sf::Texture* texture)
 	this->repairRequired = 10.f;
 	this->decayRate = 0.2;
 
-	this->damage = 1;
+	this->normal_damage = 1;
+	this->laser_damage = 3;
+	this->plasma_damage = 1;
+	this->rocket_damage = 5;
+	this->flak_damage = 1;
+	this->tri_damage = 1;
+	this->mine_damage = 1;
+
 	this->weapon_type = 1;
 	this->laser_ammo = 0;
 	this->plasma_ammo = 0;
+	this->rocket_ammo = 0;
+	this->tri_ammo = 0;
+	this->mine_ammo = 0;
 
 	this->speed = 500.f;
 
-	this->maxDelayShoot = 0.35f;
+	this->maxDelayShoot = 0.25f;
 	this->delayShoot = this->maxDelayShoot;
+
+	this->rocket_texture = rocket;
+	this->mine_texture = mine;
 }
 
 std::vector<Bullet>& Player::get_bullets()
@@ -47,6 +61,26 @@ std::vector<Laser>& Player::get_lasers()
 std::vector<Plasma>& Player::get_plasmas()
 {
 	return this->plasmas;
+}
+
+std::vector<Rocket>& Player::get_rockets()
+{
+	return this->rockets;
+}
+
+std::vector<Bullet>& Player::get_flaks()
+{
+	return this->flaks;
+}
+
+std::vector<Mine>& Player::get_mines()
+{
+	return this->mines;
+}
+
+std::vector<TriCannon>& Player::get_tricannons()
+{
+	return this->tricannons;
 }
 
 sf::FloatRect Player::getGlobalBounds()
@@ -89,6 +123,51 @@ int& Player::getShieldMax()
 	return this->maxShield;
 }
 
+int& Player::getWeaponType()
+{
+	return this->weapon_type;
+}
+
+int& Player::getLaserAmmo()
+{
+	return this->laser_ammo;
+}
+
+int& Player::getPlasmaAmmo()
+{
+	return this->plasma_ammo;
+}
+
+int& Player::getRocketAmmo()
+{
+	return this->rocket_ammo;
+}
+
+int& Player::getTriAmmo()
+{
+	return this->tri_ammo;
+}
+
+int& Player::getMineAmmo()
+{
+	return this->mine_ammo;
+}
+
+void Player::setEnemyPosition(std::vector<sf::Vector2f> enemy_position)
+{
+	this->enemy_position = enemy_position;
+}
+
+void Player::explosionFlak(sf::Vector2f position)
+{
+	float angle = 0;
+	for (int i = 0; i < 36; i++)
+	{
+		angle += 10;
+		this->flaks.push_back(Bullet(position, angle));
+	}
+}
+
 bool& Player::getHullBreach()
 {
 	return this->hull_breach;
@@ -104,9 +183,39 @@ float& Player::getRepairRequired()
 	return this->repairRequired;
 }
 
-int& Player::getDamage()
+int& Player::getNormalDamage()
 {
-	return this->damage;
+	return this->normal_damage;
+}
+
+int& Player::getLaserDamage()
+{
+	return this->laser_damage;
+}
+
+int& Player::getPlasmaDamage()
+{
+	return this->plasma_damage;
+}
+
+int& Player::getRocketDamage()
+{
+	return this->rocket_damage;
+}
+
+int& Player::getFlakDamage()
+{
+	return this->flak_damage;
+}
+
+int& Player::getTriDamage()
+{
+	return this->tri_damage;
+}
+
+int& Player::getMineDamage()
+{
+	return this->mine_damage;
 }
 
 void Player::repairHP(int hp)
@@ -131,6 +240,21 @@ void Player::gainLaserAmmo(int amount)
 void Player::gainPlasmaAmmo(int amount)
 {
 	this->plasma_ammo += amount;
+}
+
+void Player::gainRocketAmmo(int amount)
+{
+	this->rocket_ammo += amount;
+}
+
+void Player::gainTriAmmo(int amount)
+{
+	this->tri_ammo += amount;
+}
+
+void Player::gainMineAmmo(int amount)
+{
+	this->mine_ammo += amount;
 }
 
 void Player::receivedDamage(int damage)
@@ -233,6 +357,29 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 					this->plasmas.push_back(Plasma(player_position, angle));
 				}
 				break;
+			case 4:
+				if (this->rocket_ammo > 0)
+				{
+					this->rocket_ammo--;
+					this->rockets.push_back(Rocket(rocket_texture,player_position, angle));
+				}
+				break;
+			case 5:
+				if (this->tri_ammo > 0)
+				{
+					this->tri_ammo--;
+					this->tricannons.push_back(TriCannon(player_position, angle-2.5f));
+					this->tricannons.push_back(TriCannon(player_position, angle));
+					this->tricannons.push_back(TriCannon(player_position, angle+2.5f));
+				}
+				break;
+			case 6:
+				if (this->mine_ammo > 0)
+				{
+					this->mine_ammo--;
+					this->mines.push_back(Mine(mine_texture, player_position, angle));
+				}
+				break;
 			default:
 				break;
 			}
@@ -242,23 +389,38 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
 		{
 			this->weapon_type = 1;
-			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.35f;
-			this->maxDelayShoot = 0.35f;
-			this->damage = 1;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.25f;
+			this->maxDelayShoot = 0.25f;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) && this->laser_ammo > 0)
 		{
 			this->weapon_type = 2;
 			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.55f;
 			this->maxDelayShoot = 0.55f;
-			this->damage = 5;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) && this->plasma_ammo > 0)
 		{
 			this->weapon_type = 3;
 			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.1f;
 			this->maxDelayShoot = 0.1f;
-			this->damage = 1;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4) && this->rocket_ammo > 0)
+		{
+			this->weapon_type = 4;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.85f;
+			this->maxDelayShoot = 0.85f;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5) && this->tri_ammo > 0)
+		{
+			this->weapon_type = 5;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.25f;
+			this->maxDelayShoot = 0.25f;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num6) && this->mine_ammo > 0)
+		{
+			this->weapon_type = 6;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.7f;
+			this->maxDelayShoot = 0.7f;
 		}
 	}
 
@@ -308,6 +470,22 @@ void Player::renderPlayer(sf::RenderTarget& target)
 	for(int i = 0;i < this->plasmas.size();i++)
 	{
 		this->plasmas[i].renderPlasma(target);
+	}
+	for (int i = 0; i < this->rockets.size(); i++)
+	{
+		this->rockets[i].renderRocket(target);
+	}
+	for (int i = 0; i < this->flaks.size(); i++)
+	{
+		this->flaks[i].renderBullet(target);
+	}
+	for (int i = 0; i < this->tricannons.size(); i++)
+	{
+		this->tricannons[i].renderTriCannon(target);
+	}
+	for (int i = 0; i < this->mines.size(); i++)
+	{
+		this->mines[i].renderMine(target);
 	}
 	target.draw(player_sprite);
 }

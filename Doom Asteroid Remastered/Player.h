@@ -9,6 +9,9 @@
 #include "Bullet.h"
 #include "Laser.h"
 #include "Plasma.h"
+#include "Rocket.h"
+#include "TriCannon.h"
+#include "Mine.h"
 
 class Player
 {
@@ -38,7 +41,13 @@ private:
 	float decayRate;
 
 	//Combat
-	int damage;
+	int normal_damage;
+	int laser_damage;
+	int plasma_damage;
+	int rocket_damage;
+	int flak_damage;
+	int tri_damage;
+	int mine_damage;
 	int weapon_type;
 	//Time
 	float delayShoot;
@@ -60,12 +69,33 @@ private:
 	//Plasma Gun
 	std::vector<Plasma> plasmas;
 	int plasma_ammo;
+
+	//Rocket Launcher
+	sf::Texture* rocket_texture;
+	std::vector<Rocket> rockets;
+	std::vector<Bullet> flaks;
+	int rocket_ammo;
+
+	//Tri Cannon
+	sf::Texture* mine_texture;
+	std::vector<TriCannon> tricannons;
+	int tri_ammo;
+
+	//Mine Launcher
+	std::vector<Mine> mines;
+	int mine_ammo;
+
+	std::vector<sf::Vector2f> enemy_position;
 public:
-	Player(sf::Texture* texture);
+	Player(sf::Texture* texture, sf::Texture* rocket, sf::Texture* mine);
 
 	std::vector<Bullet>& get_bullets();
 	std::vector<Laser>& get_lasers();
 	std::vector<Plasma>& get_plasmas();
+	std::vector<Rocket>& get_rockets();
+	std::vector<Bullet>& get_flaks();
+	std::vector<Mine>& get_mines();
+	std::vector<TriCannon>& get_tricannons();
 	sf::FloatRect getGlobalBounds();
 	sf::Vector2f getPosition();
 	int& getIntegrity();
@@ -74,20 +104,36 @@ public:
 	int& getHpMax();
 	int& getShield();
 	int& getShieldMax();
+	int& getWeaponType();
+	int& getLaserAmmo();
+	int& getPlasmaAmmo();
+	int& getRocketAmmo();
+	int& getTriAmmo();
+	int& getMineAmmo();
+	void setEnemyPosition(std::vector<sf::Vector2f> enemy_position);
+	void explosionFlak(sf::Vector2f position);
 
 	bool& getHullBreach();
 	float& getRepaired();
 	float& getRepairRequired();
 
-	int& getDamage();
+	int& getNormalDamage();
+	int& getLaserDamage();
+	int& getPlasmaDamage();
+	int& getRocketDamage();
+	int& getFlakDamage();
+	int& getTriDamage();
+	int& getMineDamage();
 	
 	void repairHP(int hp);
 
 	void receivedShield(int shield);
 
 	void gainLaserAmmo(int amount);
-
 	void gainPlasmaAmmo(int amount);
+	void gainRocketAmmo(int amount);
+	void gainTriAmmo(int amount);
+	void gainMineAmmo(int amount);
 
 	void receivedDamage(int damage);
 

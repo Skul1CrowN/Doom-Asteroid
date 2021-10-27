@@ -17,7 +17,7 @@ Bullet::Bullet(sf::Vector2f player_position, float angle)
 	this->bullet.setPosition(player_position);
 	this->bullet.setRotation(90 + angle);
 	this->angle = angle;
-	this->speed = 1.0f;
+	this->speed = 1.3f;
 }
 
 sf::FloatRect Bullet::getGlobalBounds()

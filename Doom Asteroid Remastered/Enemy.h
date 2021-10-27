@@ -22,6 +22,8 @@ private:
 	
 	int move_phase;
 	float speed;
+	sf::Vector2f player_distance;
+	float pve_angle;
 	int score;
 
 	//Position
@@ -45,7 +47,7 @@ public:
 
 	void receiveDamage(int damage);
 
-	void updateEnemy(sf::RenderWindow* window, float deltaTime);
+	void updateEnemy(sf::RenderWindow* window,sf::Vector2f player_position,bool hull_breach,float deltaTime);
 
 	void renderEnemies(sf::RenderTarget& target);
 };
