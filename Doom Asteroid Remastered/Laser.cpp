@@ -17,7 +17,7 @@ Laser::Laser(sf::Vector2f player_position, float angle)
 	this->laser.setPosition(player_position);
 	this->laser.setRotation(90 + angle);
 	this->angle = angle;
-	this->speed = 6.5f;
+	this->speed = 5000.f;
 }
 
 sf::FloatRect Laser::getGlobalBounds()
@@ -35,9 +35,9 @@ void Laser::spawnLaser(sf::Vector2f player_position)
 	this->laser.setPosition(player_position);
 }
 
-void Laser::updateLaser()
+void Laser::updateLaser(float deltaTime)
 {
-	this->velocity = sf::Vector2f(speed * sinf(angle * 3.141592 / 180), speed * -cosf(angle * 3.141592 / 180));
+	this->velocity = sf::Vector2f(speed * sinf(angle * 3.141592 / 180) * deltaTime, speed * -cosf(angle * 3.141592 / 180) * deltaTime);
 	this->laser.move(this->velocity);
 }
 

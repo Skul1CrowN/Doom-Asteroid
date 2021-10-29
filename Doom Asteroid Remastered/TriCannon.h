@@ -22,7 +22,7 @@ public:
 
 	void spawnTriCannon(sf::Vector2f player_position);
 
-	void updateTriCannon();
+	void updateTriCannon(float deltaTime);
 
 	void renderTriCannon(sf::RenderTarget& target);
 };

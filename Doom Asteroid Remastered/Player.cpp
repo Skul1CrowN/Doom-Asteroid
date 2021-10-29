@@ -3,7 +3,7 @@
 #include<cmath>
 #include<iostream>
 
-Player::Player(sf::Texture* texture,sf::Texture* rocket,sf::Texture* mine)
+Player::Player(sf::Texture* texture,sf::Texture* rocket,sf::Texture* mine,int integrity)
 {
 	this->player_texture = texture;
 	this->mine_texture = mine;
@@ -12,7 +12,7 @@ Player::Player(sf::Texture* texture,sf::Texture* rocket,sf::Texture* mine)
 	this->player_sprite.setPosition(sf::Vector2f(50.f, 540.f));
 	this->angle = 0;
 
-	this->maxIntegrity = 1000;
+	this->maxIntegrity = integrity;
 	this->integrity = this->maxIntegrity;
 	this->maxHp = 100;
 	this->hp = this->maxHp;
@@ -46,6 +46,8 @@ Player::Player(sf::Texture* texture,sf::Texture* rocket,sf::Texture* mine)
 
 	this->rocket_texture = rocket;
 	this->mine_texture = mine;
+
+	this->menu_cooldown = true;
 }
 
 std::vector<Bullet>& Player::get_bullets()
@@ -153,17 +155,12 @@ int& Player::getMineAmmo()
 	return this->mine_ammo;
 }
 
-void Player::setEnemyPosition(std::vector<sf::Vector2f> enemy_position)
-{
-	this->enemy_position = enemy_position;
-}
-
 void Player::explosionFlak(sf::Vector2f position)
 {
 	float angle = 0;
-	for (int i = 0; i < 36; i++)
+	for (int i = 0; i < 32; i++)
 	{
-		angle += 10;
+		angle += 11.25;
 		this->flaks.push_back(Bullet(position, angle));
 	}
 }
@@ -216,6 +213,11 @@ int& Player::getTriDamage()
 int& Player::getMineDamage()
 {
 	return this->mine_damage;
+}
+
+void Player::setMenuFreeze(bool menu_cooldown)
+{
+	this->menu_cooldown = menu_cooldown;
 }
 
 void Player::repairHP(int hp)
@@ -333,7 +335,7 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 	}
 
 	//Combat
-	if (!this->hull_breach)
+	if (!this->hull_breach && !this->menu_cooldown)
 	{
 		//Shoot
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && this->delayShoot >= this->maxDelayShoot)
@@ -395,8 +397,8 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) && this->laser_ammo > 0)
 		{
 			this->weapon_type = 2;
-			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.55f;
-			this->maxDelayShoot = 0.55f;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.35f;
+			this->maxDelayShoot = 0.35f;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) && this->plasma_ammo > 0)
 		{

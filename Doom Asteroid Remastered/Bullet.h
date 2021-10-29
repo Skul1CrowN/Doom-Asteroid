@@ -22,7 +22,7 @@ public:
 
 	void spawnBullet(sf::Vector2f player_position);
 
-	void updateBullet();
+	void updateBullet(float deltaTime);
 
 	void renderBullet(sf::RenderTarget& target);
 };

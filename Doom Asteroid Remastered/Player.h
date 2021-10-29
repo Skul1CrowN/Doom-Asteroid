@@ -85,9 +85,10 @@ private:
 	std::vector<Mine> mines;
 	int mine_ammo;
 
-	std::vector<sf::Vector2f> enemy_position;
+	//System
+	bool menu_cooldown;
 public:
-	Player(sf::Texture* texture, sf::Texture* rocket, sf::Texture* mine);
+	Player(sf::Texture* texture, sf::Texture* rocket, sf::Texture* mine, int integrity);
 
 	std::vector<Bullet>& get_bullets();
 	std::vector<Laser>& get_lasers();
@@ -110,7 +111,6 @@ public:
 	int& getRocketAmmo();
 	int& getTriAmmo();
 	int& getMineAmmo();
-	void setEnemyPosition(std::vector<sf::Vector2f> enemy_position);
 	void explosionFlak(sf::Vector2f position);
 
 	bool& getHullBreach();
@@ -124,6 +124,8 @@ public:
 	int& getFlakDamage();
 	int& getTriDamage();
 	int& getMineDamage();
+
+	void setMenuFreeze(bool menu_cooldown);
 	
 	void repairHP(int hp);
 

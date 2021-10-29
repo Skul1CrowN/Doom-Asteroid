@@ -9,7 +9,7 @@ TriCannon::TriCannon(sf::Vector2f player_position, float angle)
 	this->tricannon.setPosition(player_position);
 	this->tricannon.setRotation(90 + angle);
 	this->angle = angle;
-	this->speed = 1.3f;
+	this->speed = 900.f;
 }
 
 sf::FloatRect TriCannon::getGlobalBounds()
@@ -27,9 +27,9 @@ void TriCannon::spawnTriCannon(sf::Vector2f player_position)
 	this->tricannon.setPosition(player_position);
 }
 
-void TriCannon::updateTriCannon()
+void TriCannon::updateTriCannon(float deltaTime)
 {
-	this->velocity = sf::Vector2f(speed * sinf(angle * 3.141592 / 180), speed * -cosf(angle * 3.141592 / 180));
+	this->velocity = sf::Vector2f(speed * sinf(angle * 3.141592 / 180) * deltaTime, speed * -cosf(angle * 3.141592 / 180) * deltaTime);
 	this->tricannon.move(this->velocity);
 }
 

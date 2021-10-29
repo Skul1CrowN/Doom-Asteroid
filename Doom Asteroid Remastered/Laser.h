@@ -22,7 +22,7 @@ public:
 
 	void spawnLaser(sf::Vector2f player_position);
 
-	void updateLaser();
+	void updateLaser(float deltaTime);
 
 	void renderLaser(sf::RenderTarget& target);
 };

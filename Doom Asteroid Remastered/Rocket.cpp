@@ -10,7 +10,7 @@ Rocket::Rocket(sf::Texture* texture, sf::Vector2f player_position, float angle)
 	this->rocket_sprite.setPosition(player_position);
 	this->rocket_sprite.setRotation(-90 + angle);
 	this->angle = angle;
-	this->speed = 2.f;
+	this->speed = 1500.f;
 }
 
 sf::FloatRect Rocket::getGlobalBounds()
@@ -28,9 +28,9 @@ void Rocket::spawnRocket(sf::Vector2f player_position)
 	this->rocket_sprite.setPosition(player_position);
 }
 
-void Rocket::updateRocket()
+void Rocket::updateRocket(float deltaTime)
 {
-	this->velocity = sf::Vector2f(speed * sinf(angle * 3.141592 / 180), speed * -cosf(angle * 3.141592 / 180));
+	this->velocity = sf::Vector2f(speed * sinf(angle * 3.141592 / 180) * deltaTime, speed * -cosf(angle * 3.141592 / 180) * deltaTime);
 	this->rocket_sprite.move(this->velocity);
 }
 

@@ -19,7 +19,7 @@ private:
 	int hp;
 	int level;
 	int type;
-	
+	float scale;
 	int move_phase;
 	float speed;
 	sf::Vector2f player_distance;
@@ -28,6 +28,10 @@ private:
 
 	//Position
 	sf::Vector2f enemy_position;
+
+	//Enemy HpBar
+	sf::RectangleShape hpBar;
+	sf::RectangleShape hpBarMax;
 
 	//For Fun
 	int red;

@@ -17,7 +17,7 @@ Bullet::Bullet(sf::Vector2f player_position, float angle)
 	this->bullet.setPosition(player_position);
 	this->bullet.setRotation(90 + angle);
 	this->angle = angle;
-	this->speed = 1.3f;
+	this->speed = 900.f;
 }
 
 sf::FloatRect Bullet::getGlobalBounds()
@@ -35,9 +35,9 @@ void Bullet::spawnBullet(sf::Vector2f player_position)
 	this->bullet.setPosition(player_position);
 }
 
-void Bullet::updateBullet()
+void Bullet::updateBullet(float deltaTime)
 {
-	this->velocity = sf::Vector2f(speed * sinf(angle * 3.141592 / 180), speed * -cosf(angle * 3.141592 / 180));
+	this->velocity = sf::Vector2f(speed * sinf(angle * 3.141592 / 180) * deltaTime, speed * -cosf(angle * 3.141592 / 180) * deltaTime);
 	this->bullet.move(this->velocity);
 }
 

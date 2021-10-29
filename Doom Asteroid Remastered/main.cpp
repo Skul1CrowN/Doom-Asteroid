@@ -1,12 +1,19 @@
 #include "Game.h"
 
-int main()
+void main()
 {
 	srand(time(NULL));
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Doom Asteroid", sf::Style::Fullscreen | sf::Style::Close);
 	Game game(&window);
+	Menu menu(&window);
+
 	float deltaTime = 0.0f;
 	sf::Clock clock;
+
+
+	bool focus = 1;
+	bool menu_trans = 1;
+	bool game_init = 1;
 
 	while (window.isOpen())
 	{
@@ -20,11 +27,67 @@ int main()
 			case sf::Event::Closed:
 				window.close();
 				break;
+			case sf::Event::GainedFocus:
+				focus = 1;
+				break;
+			case sf::Event::LostFocus:
+				focus = 0;
+				break;
 			}
 		}
-		game.Update(deltaTime);
+		if (focus)
+		{
+			int action = menu.getState();
 
-		game.Render();
+			switch (action)
+			{
+			case 0:
+				menu_trans = 1;
+				game_init = 1;
+				menu.updateMenuButton(deltaTime);
+				menu.drawMainMenu();
+				game.Reset();
+				break;
+			case 1:
+				menu_trans = 1;
+				game_init = 1;
+				menu.updateConfig(deltaTime);
+				menu.updateNameInput(ev, deltaTime);
+				menu.drawConfig();
+				break;
+			case 2:
+				if (menu_trans)
+				{
+					game.menuCoolDown();
+					menu_trans = 0;
+				}
+				if (game_init)
+				{
+					game.setPlayerName(menu.getPlayerName());
+					game.setDifficulty(menu.getDifficulty());
+					game.Init();
+					game_init = 0;
+				}
+				game.Update(deltaTime);
+				game.Render();
+				menu.checktriggerPause();
+				if (!game.getAlive())
+					menu.setScore(game.getScore());
+				break;
+			case 5:
+				window.close();
+				break;
+			case 6: // Pause
+				menu_trans = 1;
+				menu.updatePause(deltaTime);
+				menu.drawPause();
+				break;
+			case 7:
+				menu.updateGameOver(deltaTime);
+				menu.drawGameOver();
+			default:
+				break;
+			}
+		}
 	}
-	return 0;
 }

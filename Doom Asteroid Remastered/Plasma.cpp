@@ -7,7 +7,7 @@ Plasma::Plasma(sf::Vector2f player_position,float angle)
 	this->plasma.setFillColor(sf::Color(0, 200, 255));
 
 	this->plasma.setPosition(player_position);
-	this->speed = 2.f;
+	this->speed = 1800.f;
 	this->angle = angle;
 }
 
@@ -26,9 +26,9 @@ void Plasma::spawnPlasma(sf::Vector2f player_position)
 	this->plasma.setPosition(player_position);
 }
 
-void Plasma::updatePlasma()
+void Plasma::updatePlasma(float deltaTime)
 {
-	this->velocity = sf::Vector2f(speed * sinf(angle * 3.141592 / 180), speed * -cosf(angle * 3.141592 / 180));
+	this->velocity = sf::Vector2f(speed * sinf(angle * 3.141592 / 180) * deltaTime, speed * -cosf(angle * 3.141592 / 180) * deltaTime);
 	this->plasma.move(this->velocity);
 }
 

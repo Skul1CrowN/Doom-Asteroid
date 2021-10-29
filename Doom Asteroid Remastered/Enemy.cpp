@@ -40,20 +40,35 @@ Enemy::Enemy(sf::Texture* enemy_texture, int maxHp, int level, float speed, int 
 	this->maxHp = maxHp;
 	this->hp = this->maxHp;
 	this->level = level;
-
+	this->scale = scale;
 	this->move_phase = 0;
 	this->speed = speed;
 	this->score = score;
 	this->type = type;
 
 	//Position
-	this->enemy_sprite.setScale(sf::Vector2f(scale, scale));
+	this->enemy_sprite.setScale(sf::Vector2f(this->scale, this->scale));
 	this->enemy_sprite.setPosition(enemy_position);
 	this->enemy_sprite.setOrigin(sf::Vector2f(
 		this->enemy_sprite.getLocalBounds().width / 2,
 		this->enemy_sprite.getLocalBounds().height / 2)
 	);
 	this->enemy_sprite.setPosition(enemy_position);
+
+	//Enemy HpBar
+	this->hpBar.setSize(sf::Vector2f(115.f * this->scale, 5.f));
+	this->hpBar.setFillColor(sf::Color(255, 51, 51));
+	this->hpBar.setOrigin(sf::Vector2f(
+		this->hpBar.getLocalBounds().width / 2,
+		this->hpBar.getLocalBounds().height / 2)
+	);
+
+	this->hpBarMax.setSize(sf::Vector2f(115.f * this->scale, 5.f));
+	this->hpBarMax.setFillColor(sf::Color(71, 11, 11));
+	this->hpBarMax.setOrigin(sf::Vector2f(
+		this->hpBarMax.getLocalBounds().width / 2,
+		this->hpBarMax.getLocalBounds().height / 2)
+	);
 
 	//For Fun
 	this->color_phase = 0;
@@ -75,21 +90,21 @@ void Enemy::updateEnemy(sf::RenderWindow* window, sf::Vector2f player_position,b
 	}
 	else if (this->type == 1)//Sine Wave
 	{
-		this->move_phase += (int)(deltaTime * 700.f);
+		this->move_phase += (int)(deltaTime * 600.f);
 		this->move_phase %= 360;
 		this->enemy_sprite.rotate(0.5f * speed * deltaTime);
-		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, speed * sin(this->move_phase * 3.141592 / 180)* deltaTime));
+		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, speed * cos(this->move_phase * 3.141592 / 180)* deltaTime));
 		if (this->enemy_sprite.getPosition().y - this->getGlobalBounds().height / 2 < 0 || this->enemy_sprite.getPosition().y + this->getGlobalBounds().height / 2 > window->getSize().y)
-			this->move_phase = -this->move_phase;
+			this->move_phase += 90;
 	}
 	else if (this->type == 2)//Inverse Sine Wave
 	{
-		this->move_phase += (int)(deltaTime * 800.f);
+		this->move_phase += (int)(deltaTime * 600.f);
 		this->move_phase %= 360;
 		this->enemy_sprite.rotate(0.5f * speed * deltaTime);
-		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, -speed * sin(this->move_phase * 3.141592 / 180) * deltaTime));
+		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, -speed * cos(this->move_phase * 3.141592 / 180) * deltaTime));
 		if (this->enemy_sprite.getPosition().y - this->getGlobalBounds().height/2< 0 || this->enemy_sprite.getPosition().y + this->getGlobalBounds().height / 2 > window->getSize().y)
-			this->move_phase = -this->move_phase;
+			this->move_phase += 90;
 	}
 	else if (this->type == 3)//Track Player
 	{
@@ -102,7 +117,6 @@ void Enemy::updateEnemy(sf::RenderWindow* window, sf::Vector2f player_position,b
 		else
 			this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, 0));
 	}
-
 
 	//For Fun
 	if (this->level == 10)
@@ -131,9 +145,20 @@ void Enemy::updateEnemy(sf::RenderWindow* window, sf::Vector2f player_position,b
 		
 		this->enemy_sprite.setColor(sf::Color(red,green,blue));
 	}
+
+	//HpBar
+	this->hpBar.setPosition(sf::Vector2f(this->enemy_position) + sf::Vector2f(0.f,this->scale * 55.f));
+	this->hpBar.setSize(sf::Vector2f(115.f * this->scale * (float)this->hp / this->maxHp, 5.f));
+
+	this->hpBarMax.setPosition(sf::Vector2f(this->enemy_position) + sf::Vector2f(0.f, this->scale * 55.f));
 }
 
 void Enemy::renderEnemies(sf::RenderTarget& target)
 {
 	target.draw(this->enemy_sprite);
+	if ((float)this->hp / this->maxHp * 100.f < 100.f)
+	{
+		target.draw(this->hpBarMax);
+		target.draw(this->hpBar);
+	}
 }

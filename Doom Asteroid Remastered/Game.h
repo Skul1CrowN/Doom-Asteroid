@@ -1,14 +1,16 @@
 #pragma once
 #include "Player.h"
-#include "Bullet.h"
 #include "Enemy.h"
 #include "Item.h"
+#include "Menu.h"
 
 class Game
 {
 private:
 	//Backgroud
 	sf::RenderWindow* window;
+	sf::Texture background_texture;
+	sf::Sprite background_sprite;
 
 	//Font
 	sf::Font font;
@@ -17,6 +19,7 @@ private:
 	sf::Vector2f mouse_position;
 
 	//Player
+	std::string player_name;
 	sf::Texture player_texture;
 	sf::Texture rocket_texture;
 	sf::Texture mine_texture;
@@ -25,6 +28,10 @@ private:
 
 	//Player UI
 	
+	//Name
+	sf::Text player_text;
+	//Difficulty
+	sf::Text difficulty_text;
 	//HP
 	sf::Texture hp_texture;
 	sf::Sprite hp_icon;
@@ -58,12 +65,36 @@ private:
 	sf::Sprite weapon_icon;
 	sf::Sprite weapon_selection[6];
 
-	//Bullet
-	std::vector<Bullet> bullets;
-
 	//Enemy
 	std::vector<Enemy> enemies;
 	sf::Texture enemy_texture[6];
+	int space_level;
+
+	//Enemy Spawnset
+	std::string spawn_set[10] = {
+		"RRRRRRRRRRRRRRRBBBBB",
+		"RRRRRRRRRRRRBBBBBGGG",
+		"RRRRRRRRRRBBBBBGGGYY",
+		"RRRRRBBBBBBGGGGYYYPP",
+		"RRBBBBBBGGGGGYYYYPPP",
+		"SBBBBBGGGGGGYYYYYPPP",
+		"SBBGGGGGGGYYYYYYPPPP",
+		"SGGGGGGGYYYYYYYPPPPP",
+		"SSGGGYYYYYYYYYPPPPPP",
+		"SSYYYYYYYYYYYPPPPPPP"
+	};
+	std::string spawn_movement[10] = {
+		"NNNNNNNNNNNNNNNNNNNN",
+		"NNNNNNNNNNNNNNNNNSSS",
+		"NNNNNNNNNNNNNNNSSSSS",
+		"NNNNNNNNNNNNNSSSSSST",
+		"NNNNNNNNNNNNSSSSSSST",
+		"NNNNNNNNNNNSSSSSSSTT",
+		"NNNNNNNNNNSSSSSSSSTT",
+		"NNNNNNNNNSSSSSSSSTTT",
+		"NNNNNNNNSSSSSSSSSTTT",
+		"NNNNNNNSSSSSSSSSTTTT"
+	};
 	//Enemy Time
 	float delaySpawn;
 	float maxDelaySpawn;
@@ -86,21 +117,42 @@ private:
 	int maxEnemies;
 	float enemy_speed;
 	float damage_multipier;
+
 	//Enemy Time Modifier
 	float timeIncreaseSpawn;
 	float maxTimeIncreaseSpawn;
 
+	//Space Level Time
+	float timeIncreaseLevel;
+
+	//Menu Cooldown
+	bool menu_cooldown;
+	float menu_freeze;
 public:
 	Game(sf::RenderWindow* window);
 
+	bool& getAlive();
+	int& getScore();
+
 	void InitUI();
 	void UpdateUI(int i);
+
+	void setDifficulty(int difficulty);
+	void setPlayerName(std::string player_name);
+
+	void menuCoolDown();
 
 	void UpdateMousePos(sf::RenderWindow* window);
 
 	void SpawnEnemy();
 
+	void updateEnemyStat();
+
 	void Update(float deltaTime);
 
 	void Render();
+
+	void Reset();
+
+	void Init();
 };

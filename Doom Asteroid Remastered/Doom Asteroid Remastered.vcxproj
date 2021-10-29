@@ -162,6 +162,7 @@
     <ClCompile Include="Plasma.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rocket.cpp" />
+    <ClCompile Include="Scoreboard.cpp" />
     <ClCompile Include="TriCannon.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +176,7 @@
     <ClInclude Include="Plasma.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Rocket.h" />
+    <ClInclude Include="Scoreboard.h" />
     <ClInclude Include="TriCannon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

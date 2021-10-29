@@ -23,7 +23,7 @@ public:
 
 	void spawnRocket(sf::Vector2f player_position);
 
-	void updateRocket();
+	void updateRocket(float deltaTime);
 
 	void renderRocket(sf::RenderTarget& target);
 };

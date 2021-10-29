@@ -22,7 +22,7 @@ public:
 
 	void spawnPlasma(sf::Vector2f player_position);
 
-	void updatePlasma();
+	void updatePlasma(float deltaTime);
 
 	void renderPlasma(sf::RenderTarget& target);
 };

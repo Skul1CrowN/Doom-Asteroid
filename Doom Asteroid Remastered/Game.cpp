@@ -4,6 +4,9 @@ Game::Game(sf::RenderWindow* window)
 {
 	//Backgroud
 	this->window = window;
+	this->background_texture.loadFromFile("Images/game_background.png");
+	this->background_sprite.setTexture(this->background_texture);
+	this->background_sprite.setScale(sf::Vector2f(1.2f, 1.2f));
 
 	//Font
 	this->font.loadFromFile("Fonts/neuropol.ttf");
@@ -12,7 +15,6 @@ Game::Game(sf::RenderWindow* window)
 	this->player_texture.loadFromFile("Images/Spaceship.png");
 	this->rocket_texture.loadFromFile("Images/Rocket.png");
 	this->mine_texture.loadFromFile("Images/Mine.png");
-	this->player.push_back(Player(&player_texture,&rocket_texture,&mine_texture));
 	this->world_alive = 1;
 
 	//Enemy
@@ -53,43 +55,58 @@ Game::Game(sf::RenderWindow* window)
 
 	//Score
 	this->score = 0;
-	
+
 	//UI
 	this->InitUI();
 }
 
+bool& Game::getAlive()
+{
+	return this->world_alive;
+}
+
+int& Game::getScore()
+{
+	return this->score;
+}
+
 void Game::InitUI()
 {
+	//Player Name
+	this->player_text.setFont(this->font);
+	this->player_text.setPosition(50.f, 30.f);
+	this->player_text.setCharacterSize(16);
+
 	//HP UI
 	this->hp_indicator.setFont(this->font);
-	this->hp_indicator.setPosition(70.f, 45.f);
+	this->hp_indicator.setPosition(70.f, 50.f);
 	this->hp_indicator.setCharacterSize(16);
 
 	this->hp_texture.loadFromFile("Images/HP.png");
 	this->hp_icon.setTexture(this->hp_texture);
 	this->hp_icon.setScale(sf::Vector2f(0.08f, 0.08f));
-	this->hp_icon.setPosition(50.f, 47.f);
+	this->hp_icon.setPosition(50.f, 52.f);
 
-	this->hpBar.setPosition(50.f, 70.f);
+	this->hpBar.setPosition(50.f, 75.f);
 
-	this->hpBarMax.setPosition(50.f, 70.f);
+	this->hpBarMax.setPosition(50.f, 75.f);
 	this->hpBarMax.setSize(sf::Vector2f(300.f, 10.f));
 
 	//Shield UI
 	this->shield_indicator.setFont(this->font);
-	this->shield_indicator.setPosition(150.f, 45.f);
+	this->shield_indicator.setPosition(150.f, 50.f);
 	this->shield_indicator.setCharacterSize(16);
 
 	this->shield_texture.loadFromFile("Images/Shield.png");
 	this->shield_icon.setTexture(this->shield_texture);
 	this->shield_icon.setScale(sf::Vector2f(0.08f, 0.08f));
-	this->shield_icon.setPosition(130.f, 47.f);
+	this->shield_icon.setPosition(130.f, 52.f);
 
 	this->shieldBar.setFillColor(sf::Color(102, 178, 255));
-	this->shieldBar.setPosition(50.f, 65.f);
+	this->shieldBar.setPosition(50.f, 70.f);
 
 	this->shieldBarMax.setFillColor(sf::Color(0, 76, 153));
-	this->shieldBarMax.setPosition(50.f, 65.f);
+	this->shieldBarMax.setPosition(50.f, 70.f);
 	this->shieldBarMax.setSize(sf::Vector2f(300.f, 5.f));
 
 	//Integrity UI
@@ -112,12 +129,12 @@ void Game::InitUI()
 	//Repaired UI
 	this->hull_text.setFont(this->font);
 	this->hull_text.setString("Hull Breach!");
-	this->hull_text.setPosition(50.f, 45.f);
+	this->hull_text.setPosition(50.f, 50.f);
 	this->hull_text.setCharacterSize(18);
 	this->hull_text.setFillColor(sf::Color(255, 11, 11));
 
 	this->repair_progress.setFont(this->font);
-	this->repair_progress.setPosition(280.f, 45.f);
+	this->repair_progress.setPosition(280.f, 50.f);
 	this->repair_progress.setCharacterSize(18);
 
 	this->hull_instruction.setFont(this->font);
@@ -128,29 +145,34 @@ void Game::InitUI()
 	
 	this->repairedBar.setFillColor(sf::Color(255, 255, 255));
 	this->repairedBar.setSize(sf::Vector2f(300.f, 5.f));
-	this->repairedBar.setPosition(50.f, 65.f);
+	this->repairedBar.setPosition(50.f, 70.f);
 
 	this->repairedBarMax.setFillColor(sf::Color(101, 101, 101));
 	this->repairedBarMax.setSize(sf::Vector2f(300.f, 5.f));
-	this->repairedBarMax.setPosition(50.f, 65.f);
+	this->repairedBarMax.setPosition(50.f, 70.f);
 
 	//Score UI
 	this->score_text.setFont(this->font);
-	this->score_text.setPosition(1750.f - this->score_text.getLocalBounds().width, 50.f);
+	this->score_text.setPosition(1870.f - this->score_text.getLocalBounds().width, 75.f);
 	this->score_text.setCharacterSize(20);
 	this->score_text.setFillColor(sf::Color(255, 255, 255));
+	
+	//Difficulty
+	this->difficulty_text.setFont(this->font);
+	this->difficulty_text.setPosition(1870.f - this->difficulty_text.getLocalBounds().width, 50.f);
+	this->difficulty_text.setCharacterSize(20);
 
 	//Weapon UI
 	this->weapon_name.setFont(this->font);
-	this->weapon_name.setPosition(110.f, 100.f);
+	this->weapon_name.setPosition(110.f, 105.f);
 	this->weapon_name.setCharacterSize(18);
 
 	this->ammo_amount.setFont(this->font);
-	this->ammo_amount.setPosition(110.f, 120.f);
+	this->ammo_amount.setPosition(110.f, 125.f);
 	this->ammo_amount.setCharacterSize(18);
 
 	this->weapon_icon.setScale(sf::Vector2f(0.7f, 0.7f));
-	this->weapon_icon.setPosition(50.f, 100.f);
+	this->weapon_icon.setPosition(50.f, 105.f);
 
 	this->weapon_selection[0].setTexture(this->weapon_texture[0]);
 	this->weapon_selection[1].setTexture(this->weapon_disabled[0]);
@@ -220,7 +242,7 @@ void Game::UpdateUI(int i)
 
 	//Score
 	this->score_text.setString(std::to_string(this->score));
-
+	this->score_text.setOrigin(sf::Vector2f(this->score_text.getLocalBounds().width,0.f));
 	//Weapon UI
 	switch (this->player[i].getWeaponType())
 	{
@@ -280,6 +302,53 @@ void Game::UpdateUI(int i)
 
 }
 
+void Game::setDifficulty(int difficulty)
+{
+	this->difficulty = difficulty;
+	switch (difficulty)
+	{
+	case 0://Easy
+		this->difficulty_text.setString("Easy");
+		this->difficulty_text.setFillColor(sf::Color(51, 255, 51));
+		this->difficulty_text.setOrigin(sf::Vector2f(this->difficulty_text.getLocalBounds().width,0.f));
+		break;
+	case 1://Medium
+		this->difficulty_text.setString("Medium");
+		this->difficulty_text.setFillColor(sf::Color(255, 255, 51));
+		this->difficulty_text.setOrigin(sf::Vector2f(this->difficulty_text.getLocalBounds().width, 0.f));
+		break;
+	case 2://Hard
+		this->difficulty_text.setString("Hard");
+		this->difficulty_text.setFillColor(sf::Color(255, 128, 51));
+		this->difficulty_text.setOrigin(sf::Vector2f(this->difficulty_text.getLocalBounds().width, 0.f));
+		break;
+	case 3://Insane
+		this->difficulty_text.setString("Insane");
+		this->difficulty_text.setFillColor(sf::Color(255, 51, 51));
+		this->difficulty_text.setOrigin(sf::Vector2f(this->difficulty_text.getLocalBounds().width, 0.f));
+		break;
+	case 4://Apocalypse
+		this->difficulty_text.setString("Apocalypse");
+		this->difficulty_text.setFillColor(sf::Color(128, 51, 255));
+		this->difficulty_text.setOrigin(sf::Vector2f(this->difficulty_text.getLocalBounds().width, 0.f));
+		break;
+	default:
+		break;
+	}
+}
+
+void Game::setPlayerName(std::string player_name)
+{
+	this->player_name = player_name;
+	this->player_text.setString(this->player_name);
+}
+
+void Game::menuCoolDown()
+{
+	this->menu_cooldown = true;
+	this->menu_freeze = 0.0f;
+}
+
 void Game::UpdateMousePos(sf::RenderWindow* window)
 {
 	this->mouse_position = sf::Vector2f(sf::Mouse::getPosition(*window));
@@ -287,16 +356,111 @@ void Game::UpdateMousePos(sf::RenderWindow* window)
 
 void Game::SpawnEnemy()
 {
-	int spawn_normal = rand() % 6;
-	int spawn_type = rand() % 4;
+	//Random
+	std::string spawn_type = this->spawn_set[this->space_level - 1];
+	char type = spawn_type[rand() % 20];
+	std::string spawn_move = this->spawn_movement[this->space_level - 1];
+	char move = spawn_move[rand() % 20];
+	int color;
+	int movement;
+	switch (type)
+	{
+	case 'R':
+		color = 0;
+		break;
+	case 'B':
+		color = 1;
+		break;
+	case 'G':
+		color = 2;
+		break;
+	case 'Y':
+		color = 3;
+		break;
+	case 'P':
+		color = 4;
+		break;
+	case 'S':
+		color = 5;
+		break;
+	default:
+		break;
+	}
+	switch (move)
+	{
+	case 'N':
+		movement = 0;
+		break;
+	case 'S':
+		movement = rand() % 2 + 1;
+		break;
+	case 'T':
+		movement = 3;
+		break;
+	default:
+		break;
+	}
+
 	int level_stat[] = { 1,2,3,4,5,10 };
 	int hp_stat[] = { 1,2,3,4,5,10 };
 	int score_stat[] = { 10,20,30,40,50,200 };
+
 	int rand_scale = rand() % 65 + 40;
 	float scale = (float)rand_scale / 100;
+
 	int rand_posY = rand() % (window->getSize().y - (int)(120 * scale)) + (int)(60 * scale);
 	sf::Vector2f enemy_pos = sf::Vector2f(window->getSize().x, rand_posY);
-	this->enemies.push_back(Enemy(&enemy_texture[spawn_normal], hp_stat[spawn_normal], level_stat[spawn_normal], enemy_speed, score_stat[spawn_normal],enemy_pos,scale,spawn_type));
+
+	this->enemies.push_back(Enemy(&enemy_texture[color], hp_stat[color], level_stat[color], enemy_speed, score_stat[color],enemy_pos,scale, movement));
+}
+
+void Game::updateEnemyStat()
+{
+	switch (this->space_level)
+	{
+	case 1:
+		this->enemy_speed = 100.f;
+		this->maxDelaySpawn = 1.0f;
+		break;
+	case 2:
+		this->enemy_speed = 150.f;
+		this->maxDelaySpawn = 0.9f;
+		break;
+	case 3:
+		this->enemy_speed = 200.f;
+		this->maxDelaySpawn = 0.8f;
+		break;
+	case 4:
+		this->enemy_speed = 250.f;
+		this->maxDelaySpawn = 0.7f;
+		break;
+	case 5:
+		this->enemy_speed = 300.f;
+		this->maxDelaySpawn = 0.6f;
+		break;
+	case 6:
+		this->enemy_speed = 350.f;
+		this->maxDelaySpawn = 0.5f;
+		break;
+	case 7:
+		this->enemy_speed = 400.f;
+		this->maxDelaySpawn = 0.4f;
+		break;
+	case 8:
+		this->enemy_speed = 450.f;
+		this->maxDelaySpawn = 0.3f;
+		break;
+	case 9:
+		this->enemy_speed = 500.f;
+		this->maxDelaySpawn = 0.2f;
+		break;
+	case 10:
+		this->enemy_speed = 550.f;
+		this->maxDelaySpawn = 0.1f;
+		break;
+	default:
+		break;
+	}
 }
 
 void Game::Update(float deltaTime)
@@ -305,6 +469,8 @@ void Game::Update(float deltaTime)
 		
 	if (world_alive)
 	{
+		//Space Level Check
+		this->updateEnemyStat();
 		//Spawn Enemy
 		if (this->delaySpawn >= this->maxDelaySpawn && enemies.size() < this->maxEnemies)
 		{
@@ -317,11 +483,12 @@ void Game::Update(float deltaTime)
 		{
 			//UpdateUI
 			this->UpdateUI(i);
+			this->player[i].setMenuFreeze(this->menu_cooldown);//Bounce Play Button
 			this->player[i].updatePlayer(window, mouse_position, deltaTime);
 			//Bullet Update
 			for (int j = 0; j < player[i].get_bullets().size(); j++)
 			{
-				this->player[i].get_bullets()[j].updateBullet();
+				this->player[i].get_bullets()[j].updateBullet(deltaTime);
 				//Bullet vs Enemy
 				for (int k = 0; k < enemies.size(); k++)
 				{
@@ -335,7 +502,7 @@ void Game::Update(float deltaTime)
 						if (this->enemies[k].getHp() <= 0)
 						{
 							//Update Score
-							this->score += this->enemies[k].getScore();
+							this->score += this->enemies[k].getScore() * this->score_multipier;
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
@@ -366,7 +533,7 @@ void Game::Update(float deltaTime)
 			//Laser Update
 			for (int j = 0; j < player[i].get_lasers().size(); j++)
 			{
-				this->player[i].get_lasers()[j].updateLaser();
+				this->player[i].get_lasers()[j].updateLaser(deltaTime);
 				//Laser vs Enemy
 				for (int k = 0; k < enemies.size(); k++)
 				{
@@ -378,7 +545,7 @@ void Game::Update(float deltaTime)
 						if (this->enemies[k].getHp() <= 0)
 						{
 							//Update Score
-							this->score += this->enemies[k].getScore();
+							this->score += this->enemies[k].getScore() * this->score_multipier;
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
@@ -409,7 +576,7 @@ void Game::Update(float deltaTime)
 			//Plasma Update
 			for (int j = 0; j < player[i].get_plasmas().size(); j++)
 			{
-				this->player[i].get_plasmas()[j].updatePlasma();
+				this->player[i].get_plasmas()[j].updatePlasma(deltaTime);
 				//Plasma vs Enemy
 				for (int k = 0; k < enemies.size(); k++)
 				{
@@ -421,7 +588,7 @@ void Game::Update(float deltaTime)
 						if (this->enemies[k].getHp() <= 0)
 						{
 							//Update Score
-							this->score += this->enemies[k].getScore();
+							this->score += this->enemies[k].getScore() * this->score_multipier;
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
@@ -452,7 +619,7 @@ void Game::Update(float deltaTime)
 			//Rocket Update
 			for (int j = 0; j < player[i].get_rockets().size(); j++)
 			{
-				this->player[i].get_rockets()[j].updateRocket();
+				this->player[i].get_rockets()[j].updateRocket(deltaTime);
 				//Rocket vs Enemy
 				for (int k = 0; k < enemies.size(); k++)
 				{
@@ -466,7 +633,7 @@ void Game::Update(float deltaTime)
 						if (this->enemies[k].getHp() <= 0)
 						{
 							//Update Score
-							this->score += this->enemies[k].getScore();
+							this->score += this->enemies[k].getScore() * this->score_multipier;
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
@@ -501,7 +668,7 @@ void Game::Update(float deltaTime)
 			//Flak Update
 			for (int j = 0; j < player[i].get_flaks().size(); j++)
 			{
-				this->player[i].get_flaks()[j].updateBullet();
+				this->player[i].get_flaks()[j].updateBullet(deltaTime);
 				//Flak vs Enemy
 				for (int k = 0; k < enemies.size(); k++)
 				{
@@ -513,7 +680,7 @@ void Game::Update(float deltaTime)
 						if (this->enemies[k].getHp() <= 0)
 						{
 							//Update Score
-							this->score += this->enemies[k].getScore();
+							this->score += this->enemies[k].getScore() * this->score_multipier;
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
@@ -544,7 +711,7 @@ void Game::Update(float deltaTime)
 			//Tri Cannon
 			for (int j = 0; j < player[i].get_tricannons().size(); j++)
 			{
-				this->player[i].get_tricannons()[j].updateTriCannon();
+				this->player[i].get_tricannons()[j].updateTriCannon(deltaTime);
 				//Tri Cannon vs Enemy
 				for (int k = 0; k < enemies.size(); k++)
 				{
@@ -556,7 +723,7 @@ void Game::Update(float deltaTime)
 						if (this->enemies[k].getHp() <= 0)
 						{
 							//Update Score
-							this->score += this->enemies[k].getScore();
+							this->score += this->enemies[k].getScore() * this->score_multipier;
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
@@ -585,7 +752,7 @@ void Game::Update(float deltaTime)
 				}
 			}
 			//Mine Update
-			for(int j = 0; j < player[i].get_mines().size(); j++)
+			for (int j = 0; j < player[i].get_mines().size(); j++)
 			{
 				this->player[i].get_mines()[j].updateMine(deltaTime);
 				//Mine vs Enemy
@@ -604,7 +771,7 @@ void Game::Update(float deltaTime)
 						if (this->enemies[k].getHp() <= 0)
 						{
 							//Update Score
-							this->score += this->enemies[k].getScore();
+							this->score += this->enemies[k].getScore() * this->score_multipier;
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
@@ -633,7 +800,10 @@ void Game::Update(float deltaTime)
 			}
 			//World Integrity Check
 			if (this->player[i].getIntegrity() <= 0)
+			{
+				//Game Over
 				this->world_alive = 0;
+			}
 		}
 
 		//Update Enemy
@@ -645,7 +815,7 @@ void Game::Update(float deltaTime)
 				// Enemy vs Player
 				if (this->enemies[i].getGlobalBounds().intersects(this->player[j].getGlobalBounds()) && !this->player[j].getHullBreach())
 				{
-					this->player[j].receivedDamage(this->enemies[i].getLevel());
+					this->player[j].receivedDamage(this->enemies[i].getLevel() * this->damage_multipier);
 					this->enemies.erase(this->enemies.begin() + i);
 					return;
 				}
@@ -703,6 +873,35 @@ void Game::Update(float deltaTime)
 		if (this->delaySpawn < this->maxDelaySpawn)
 			this->delaySpawn += deltaTime;
 
+		//Increase Max Enemy
+		if (this->timeIncreaseSpawn < this->maxTimeIncreaseSpawn)
+			this->timeIncreaseSpawn += deltaTime;
+		else
+		{
+			this->maxEnemies++;
+			this->timeIncreaseSpawn = 0.0f;
+		}
+
+		//Increase Space Level
+		if (this->timeIncreaseLevel < 180.f)
+			this->timeIncreaseLevel += deltaTime;
+		else
+		{
+			this->space_level++;
+			if (this->space_level > 10)
+				this->space_level = 10;
+			this->timeIncreaseLevel = 0.0f;
+		}
+	}
+
+	//Menu Bounce
+	if (this->menu_cooldown)
+	{
+		if (this->menu_freeze < 0.15f)
+			this->menu_freeze += deltaTime;
+
+		if (this->menu_freeze >= 0.15f)
+			this->menu_cooldown = false;
 	}
 }
 
@@ -710,6 +909,9 @@ void Game::Render()
 {
 	this->window->clear();
 	
+	//Background
+	this->window->draw(this->background_sprite);
+
 	//Player Ship
 	for (int i = 0; i < this->player.size(); i++)
 		this->player[i].renderPlayer(*this->window);
@@ -723,6 +925,9 @@ void Game::Render()
 		this->enemies[i].renderEnemies(*this->window);
 	
 	//Player UI
+	this->window->draw(this->player_text);
+	this->window->draw(this->difficulty_text);
+
 	for (int i = 0; i < this->player.size(); i++)
 	{
 		if (!this->player[i].getHullBreach())
@@ -762,12 +967,90 @@ void Game::Render()
 	this->window->draw(weapon_name);
 	this->window->draw(ammo_amount);
 	this->window->draw(weapon_icon);
-
-	//Game Over Scene
-	if (!this->world_alive)
-	{
-		this->window->clear();
-	}
 	
 	this->window->display();
+}
+
+void Game::Reset()
+{
+	//Player
+	this->player.clear();
+	this->world_alive = 1;
+
+	//Enemy
+	this->enemies.clear();
+
+	//Item
+	this->items.clear();
+
+	//Score
+	this->score = 0;
+
+	//Menu Bounce
+	this->menu_freeze = 0.0f;
+	this->menu_cooldown = 1;
+
+	//Time
+	this->delaySpawn = 0.0f;
+	this->timeIncreaseSpawn = 0.0f;
+	this->timeIncreaseLevel = 0.0f;
+}
+
+void Game::Init()
+{
+	switch (this->difficulty)
+	{
+	case 0://Easy
+		//Player
+		this->player.push_back(Player(&player_texture, &rocket_texture, &mine_texture, 1200));
+		this->score_multipier = 0.5f;
+		//Enemy
+		this->space_level = 1;
+		this->damage_multipier = 1.f;
+		this->maxEnemies = 10;
+		this->maxTimeIncreaseSpawn = 180.f;
+		break;
+	case 1://Medium
+		//Player
+		this->player.push_back(Player(&player_texture, &rocket_texture, &mine_texture, 1000));
+		this->score_multipier = 1.0f;
+		//Enemy
+		this->space_level = 2;
+		this->damage_multipier = 1.f;
+		this->maxEnemies = 15;
+		this->maxTimeIncreaseSpawn = 150.f;
+		break;
+	case 2://Hard
+		//Player
+		this->player.push_back(Player(&player_texture, &rocket_texture, &mine_texture, 800));
+		this->score_multipier = 1.5f;
+		//Enemy
+		this->space_level = 3;
+		this->damage_multipier = 2.f;
+		this->maxEnemies = 20;
+		this->maxTimeIncreaseSpawn = 120.f;
+		break;
+	case 3://Insane
+		//Player
+		this->player.push_back(Player(&player_texture, &rocket_texture, &mine_texture, 600));
+		this->score_multipier = 2.0f;
+		//Enemy
+		this->space_level = 4;
+		this->damage_multipier = 2.f;
+		this->maxEnemies = 25;
+		this->maxTimeIncreaseSpawn = 90.f;
+		break;
+	case 4://Apocalypse
+		//Player
+		this->player.push_back(Player(&player_texture, &rocket_texture, &mine_texture, 500));
+		this->score_multipier = 2.5f;
+		//Enemy
+		this->space_level = 5;
+		this->damage_multipier = 3.f;
+		this->maxEnemies = 30;
+		this->maxTimeIncreaseSpawn = 60.f;
+		break;
+	default:
+		break;
+	}
 }
