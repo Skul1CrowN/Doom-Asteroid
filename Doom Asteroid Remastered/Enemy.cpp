@@ -147,10 +147,10 @@ void Enemy::updateEnemy(sf::RenderWindow* window, sf::Vector2f player_position,b
 	}
 
 	//HpBar
-	this->hpBar.setPosition(sf::Vector2f(this->enemy_position) + sf::Vector2f(0.f,this->scale * 55.f));
+	this->hpBar.setPosition(sf::Vector2f(this->enemy_position) + sf::Vector2f(0.f,this->scale * 70.f));
 	this->hpBar.setSize(sf::Vector2f(115.f * this->scale * (float)this->hp / this->maxHp, 5.f));
 
-	this->hpBarMax.setPosition(sf::Vector2f(this->enemy_position) + sf::Vector2f(0.f, this->scale * 55.f));
+	this->hpBarMax.setPosition(sf::Vector2f(this->enemy_position) + sf::Vector2f(0.f, this->scale * 70.f));
 }
 
 void Enemy::renderEnemies(sf::RenderTarget& target)

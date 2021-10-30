@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "Item.h"
 #include "Menu.h"
+#include "Scoreboard.h"
 
 class Game
 {

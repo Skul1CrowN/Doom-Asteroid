@@ -145,6 +145,8 @@ Menu::Menu(sf::RenderWindow* window)
 
 	this->transition = 0;
 	this->transitionCooldown = 0.0f;
+
+	this->valid_name = 0;
 }
 
 void Menu::setScore(int score)
@@ -152,7 +154,7 @@ void Menu::setScore(int score)
 	this->score = score;
 	this->final_score_text.setString("Score: " + std::to_string(this->score));
 	this->final_score_text.setOrigin(sf::Vector2f(this->final_score_text.getLocalBounds().width / 2, this->final_score_text.getLocalBounds().height / 2));
-	this->state = 7;
+	this->updateMenuState(7);
 }
 
 void Menu::updateMenuState(int state)
@@ -208,7 +210,7 @@ void Menu::updateMenuButton(float deltaTime)
 			this->score_text.setFillColor(sf::Color(255, 255, 0));
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !mouseheld && !transition)
 			{
-				this->updateMenuState(0);
+				this->updateMenuState(3);
 			}
 		}
 		else
@@ -350,7 +352,7 @@ void Menu::updateConfig(float deltaTime)
 	{
 		this->go_text.setScale(sf::Vector2f(1.1f, 1.1f));
 		this->go_text.setFillColor(sf::Color(0, 255, 255));
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !mouseheld && !transition)
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !mouseheld && !transition && valid_name)
 		{
 			this->updateMenuState(2);
 		}
@@ -430,6 +432,7 @@ void Menu::updateNameInput(sf::Event& event, float deltaTime)
 	{
 		this->name_input.setString("Type your name");
 		this->type_bounce = 0;
+		this->valid_name = 0;
 	}
 	else
 	{
@@ -451,6 +454,7 @@ void Menu::updateNameInput(sf::Event& event, float deltaTime)
 		}
 		else
 			this->type_bounce = 0;
+		this->valid_name = 1;
 	}
 }
 
@@ -507,6 +511,12 @@ void Menu::checktriggerPause()
 	{
 		this->escape_bounce = 0;
 	}
+}
+
+void Menu::backToMenu(bool trigger)
+{
+	if (trigger)
+		updateMenuState(0);
 }
 
 int& Menu::getState()

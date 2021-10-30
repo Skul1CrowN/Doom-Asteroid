@@ -85,6 +85,7 @@ private:
 	bool transition;
 	float transitionCooldown;
 
+	bool valid_name;
 public:
 	Menu(sf::RenderWindow* window);
 
@@ -98,6 +99,7 @@ public:
 	void updateNameInput(sf::Event& event, float deltaTime);
 	void updateDifficulty();
 	void checktriggerPause();
+	void backToMenu(bool trigger);
 
 	int& getState();
 	std::string& getPlayerName();

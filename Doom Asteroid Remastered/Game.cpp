@@ -803,6 +803,7 @@ void Game::Update(float deltaTime)
 			{
 				//Game Over
 				this->world_alive = 0;
+				Scoreboard(this->window).writeFile(this->player_name, this->score, this->difficulty);
 			}
 		}
 

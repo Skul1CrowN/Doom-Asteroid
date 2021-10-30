@@ -6,6 +6,7 @@ void main()
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Doom Asteroid", sf::Style::Fullscreen | sf::Style::Close);
 	Game game(&window);
 	Menu menu(&window);
+	Scoreboard score(&window);
 
 	float deltaTime = 0.0f;
 	sf::Clock clock;
@@ -42,8 +43,7 @@ void main()
 			switch (action)
 			{
 			case 0:
-				menu_trans = 1;
-				game_init = 1;
+				score.resetReturntoMenu();
 				menu.updateMenuButton(deltaTime);
 				menu.drawMainMenu();
 				game.Reset();
@@ -73,6 +73,13 @@ void main()
 				menu.checktriggerPause();
 				if (!game.getAlive())
 					menu.setScore(game.getScore());
+				break;
+			case 3:
+				score.transitionDelay();
+				score.updateButton(deltaTime);
+				score.updateScore();
+				score.render();
+				menu.backToMenu(score.returnToMenu());
 				break;
 			case 5:
 				window.close();
