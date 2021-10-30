@@ -1,9 +1,12 @@
 #include "Game.h"
 
-void main()
+int main()
 {
 	srand(time(NULL));
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Doom Asteroid", sf::Style::Fullscreen | sf::Style::Close);
+	sf::Image icon;
+	icon.loadFromFile("./Images/Asteroid.png");
+	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 	Game game(&window);
 	Menu menu(&window);
 	Scoreboard score(&window);
@@ -97,4 +100,5 @@ void main()
 			}
 		}
 	}
+	return 0;
 }
