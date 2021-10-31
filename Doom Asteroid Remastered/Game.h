@@ -8,7 +8,7 @@
 class Game
 {
 private:
-	//Backgroud
+	//Background
 	sf::RenderWindow* window;
 	sf::Texture background_texture;
 	sf::Sprite background_sprite;
@@ -22,8 +22,13 @@ private:
 	//Player
 	std::string player_name;
 	sf::Texture player_texture;
+	sf::Texture bullet_texture;
+	sf::Texture plasma_texture;
 	sf::Texture rocket_texture;
+	sf::Texture tri_texture;
 	sf::Texture mine_texture;
+	sf::Texture nuke_texture;
+	sf::Texture nukeFlak_texture;
 	std::vector<Player> player;
 	bool world_alive;
 
@@ -60,11 +65,11 @@ private:
 	//Weapon UI
 	sf::Text weapon_name;
 	sf::Text ammo_amount;
-	sf::Text ammo_list[5];
-	sf::Texture weapon_texture[6];
-	sf::Texture weapon_disabled[5];
+	sf::Text ammo_list[6];
+	sf::Texture weapon_texture[7];
+	sf::Texture weapon_disabled[6];
 	sf::Sprite weapon_icon;
-	sf::Sprite weapon_selection[6];
+	sf::Sprite weapon_ammo[6];
 
 	//Enemy
 	std::vector<Enemy> enemies;
@@ -99,11 +104,12 @@ private:
 	//Enemy Time
 	float delaySpawn;
 	float maxDelaySpawn;
-	int hitted_index;
+	int rocket_hitted_index;
+	int nuke_hitted_index;
 
 	//Items
 	std::vector<Item> items;
-	sf::Texture item_texture[7];
+	sf::Texture item_texture[8];
 
 	//Score
 	int score;

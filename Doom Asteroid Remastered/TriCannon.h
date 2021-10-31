@@ -8,6 +8,7 @@
 class TriCannon
 {
 private:
+	sf::Texture* tri_texture;
 	sf::RectangleShape tricannon;
 
 	float speed;
@@ -15,7 +16,7 @@ private:
 	sf::Vector2f velocity;
 
 public:
-	TriCannon(sf::Vector2f player_position, float angle);
+	TriCannon(sf::Texture *texture,sf::Vector2f player_position, float angle);
 
 	sf::FloatRect getGlobalBounds();
 	sf::Vector2f get_position();

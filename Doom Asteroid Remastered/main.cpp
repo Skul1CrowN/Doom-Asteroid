@@ -45,20 +45,20 @@ int main()
 
 			switch (action)
 			{
-			case 0:
+			case 0://Menu
 				score.resetReturntoMenu();
 				menu.updateMenuButton(deltaTime);
 				menu.drawMainMenu();
 				game.Reset();
 				break;
-			case 1:
+			case 1://Config
 				menu_trans = 1;
 				game_init = 1;
 				menu.updateConfig(deltaTime);
 				menu.updateNameInput(ev, deltaTime);
 				menu.drawConfig();
 				break;
-			case 2:
+			case 2:// Game
 				if (menu_trans)
 				{
 					game.menuCoolDown();
@@ -77,14 +77,18 @@ int main()
 				if (!game.getAlive())
 					menu.setScore(game.getScore());
 				break;
-			case 3:
+			case 3://Leaderboard
 				score.transitionDelay();
 				score.updateButton(deltaTime);
 				score.updateScore();
 				score.render();
 				menu.backToMenu(score.returnToMenu());
 				break;
-			case 5:
+			case 4: // Tutorial
+				menu.updateTutorial(deltaTime);
+				menu.drawTutorial();
+				break;
+			case 5:// Quit
 				window.close();
 				break;
 			case 6: // Pause
@@ -92,7 +96,7 @@ int main()
 				menu.updatePause(deltaTime);
 				menu.drawPause();
 				break;
-			case 7:
+			case 7: // Game Over
 				menu.updateGameOver(deltaTime);
 				menu.drawGameOver();
 			default:

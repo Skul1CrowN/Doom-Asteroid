@@ -1,10 +1,12 @@
 #include "Plasma.h"
 
-Plasma::Plasma(sf::Vector2f player_position,float angle)
+Plasma::Plasma(sf::Texture* texture,sf::Vector2f player_position,float angle)
 {
+	this->plasma_texture = texture;
+
 	this->plasma.setRadius(5.f);
 	this->plasma.setOrigin(sf::Vector2f(2.5f, 2.5f));
-	this->plasma.setFillColor(sf::Color(0, 200, 255));
+	this->plasma.setTexture(this->plasma_texture);
 
 	this->plasma.setPosition(player_position);
 	this->speed = 1800.f;

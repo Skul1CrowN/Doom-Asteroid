@@ -1,4 +1,5 @@
 #pragma once
+#include "Enemy.h"
 #include<SFML/Graphics.hpp>
 #include<SFML/System.hpp>
 #include<SFML/Window.hpp>
@@ -77,6 +78,15 @@ private:
 	sf::Text menu_text;
 	sf::Text final_score_text;
 
+	//Tutorial
+	sf::Texture asteroid_texture;
+	std::vector<Enemy> rgb_asteroid;
+	sf::Texture how_texture;
+	sf::Sprite how_background;
+	sf::Texture tutorial_texture;
+	sf::Sprite tutorial_sprite;
+	sf::Text tutorial_back;
+
 	//Mouse Debounce
 	bool mouseheld;
 	float mouseheldTime;
@@ -97,6 +107,7 @@ public:
 	void updateConfig(float deltaTime);
 	void updateGameOver(float deltaTime);
 	void updateNameInput(sf::Event& event, float deltaTime);
+	void updateTutorial(float deltaTime);
 	void updateDifficulty();
 	void checktriggerPause();
 	void backToMenu(bool trigger);
@@ -107,6 +118,7 @@ public:
 	void drawMainMenu();
 	void drawConfig();
 	void drawLeaderBoard();
+	void drawTutorial();
 	void drawPause();
 	void drawGameOver();
 };

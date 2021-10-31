@@ -3,10 +3,9 @@
 #include<cmath>
 #include<iostream>
 
-Player::Player(sf::Texture* texture,sf::Texture* rocket,sf::Texture* mine,int integrity)
+Player::Player(sf::Texture* texture, sf::Texture* bullet, sf::Texture* plasma, sf::Texture* rocket, sf::Texture* tricannon, sf::Texture* mine, sf::Texture* nuke, sf::Texture* nukeFlak, int integrity)
 {
 	this->player_texture = texture;
-	this->mine_texture = mine;
 	this->player_sprite.setTexture(*this->player_texture);
 	this->player_sprite.setScale(sf::Vector2f(0.15f, 0.15f));
 	this->player_sprite.setPosition(sf::Vector2f(50.f, 540.f));
@@ -31,23 +30,78 @@ Player::Player(sf::Texture* texture,sf::Texture* rocket,sf::Texture* mine,int in
 	this->flak_damage = 1;
 	this->tri_damage = 1;
 	this->mine_damage = 1;
+	this->nuke_damage = 10;
+	this->nuke_flak_damage = 10;
 
 	this->weapon_type = 1;
+	this->type_runner = this->weapon_type;
 	this->laser_ammo = 0;
 	this->plasma_ammo = 0;
 	this->rocket_ammo = 0;
 	this->tri_ammo = 0;
 	this->mine_ammo = 0;
+	this->nuke_ammo = 0;
 
 	this->speed = 500.f;
 
 	this->maxDelayShoot = 0.25f;
 	this->delayShoot = this->maxDelayShoot;
 
-	this->rocket_texture = rocket;
-	this->mine_texture = mine;
+	//Hp bar
+	this->hpBar.setSize(sf::Vector2f(80.f, 5.f));
+	this->hpBar.setFillColor(sf::Color(51, 255, 51));
+	this->hpBar.setOrigin(sf::Vector2f(
+		this->hpBar.getLocalBounds().width / 2,
+		this->hpBar.getLocalBounds().height / 2)
+	);
 
-	this->menu_cooldown = true;
+	this->hpBarMax.setSize(sf::Vector2f(80.f, 5.f));
+	this->hpBarMax.setFillColor(sf::Color(11, 71, 11));
+	this->hpBarMax.setOrigin(sf::Vector2f(
+		this->hpBarMax.getLocalBounds().width / 2,
+		this->hpBarMax.getLocalBounds().height / 2)
+	);
+
+	//Shield bar
+	this->shieldBar.setSize(sf::Vector2f(80.f, 5.f));
+	this->shieldBar.setFillColor(sf::Color(102, 178, 255));
+	this->shieldBar.setOrigin(sf::Vector2f(
+		this->shieldBar.getLocalBounds().width / 2,
+		this->shieldBar.getLocalBounds().height / 2)
+	);
+
+	this->shieldBarMax.setSize(sf::Vector2f(80.f, 5.f));
+	this->shieldBarMax.setFillColor(sf::Color(0, 76, 153));
+	this->shieldBarMax.setOrigin(sf::Vector2f(
+		this->shieldBarMax.getLocalBounds().width / 2,
+		this->shieldBarMax.getLocalBounds().height / 2)
+	);
+	
+	//Repair Bar
+	this->repairBar.setFillColor(sf::Color(255, 255, 255));
+	this->repairBar.setSize(sf::Vector2f(80.f, 5.f));
+	this->repairBar.setOrigin(sf::Vector2f(
+		this->repairBar.getLocalBounds().width / 2,
+		this->repairBar.getLocalBounds().height / 2)
+	);
+
+	this->repairBarMax.setFillColor(sf::Color(101, 101, 101));
+	this->repairBarMax.setSize(sf::Vector2f(80.f, 5.f));
+	this->repairBarMax.setOrigin(sf::Vector2f(
+		this->repairBarMax.getLocalBounds().width / 2,
+		this->repairBarMax.getLocalBounds().height / 2)
+	);
+
+	this->bullet_texture = bullet;
+	this->plasma_texture = plasma;
+	this->rocket_texture = rocket;
+	this->tri_texture = tricannon;
+	this->mine_texture = mine;
+	this->nuke_texture = nuke;
+	this->nukeFlak_texture = nukeFlak;
+	this->menu_cooldown = 1;
+	this->rightclick = 1;
+
 }
 
 std::vector<Bullet>& Player::get_bullets()
@@ -78,6 +132,16 @@ std::vector<Bullet>& Player::get_flaks()
 std::vector<Mine>& Player::get_mines()
 {
 	return this->mines;
+}
+
+std::vector<Nuke>& Player::get_nukes()
+{
+	return this->nukes;
+}
+
+std::vector<Bullet>& Player::get_nukeFlak()
+{
+	return this->nuke_flaks;
 }
 
 std::vector<TriCannon>& Player::get_tricannons()
@@ -155,13 +219,28 @@ int& Player::getMineAmmo()
 	return this->mine_ammo;
 }
 
+int& Player::getNukeAmmo()
+{
+	return this->nuke_ammo;
+}
+
 void Player::explosionFlak(sf::Vector2f position)
 {
 	float angle = 0;
 	for (int i = 0; i < 32; i++)
 	{
 		angle += 11.25;
-		this->flaks.push_back(Bullet(position, angle));
+		this->flaks.push_back(Bullet(this->bullet_texture,position, angle));
+	}
+}
+
+void Player::nukeExplosionFlak(sf::Vector2f position)
+{
+	float angle = 0;
+	for (int i = 0; i < 72; i++)
+	{
+		angle += 5.0;
+		this->nuke_flaks.push_back(Bullet(this->nukeFlak_texture, position, angle));
 	}
 }
 
@@ -213,6 +292,16 @@ int& Player::getTriDamage()
 int& Player::getMineDamage()
 {
 	return this->mine_damage;
+}
+
+int& Player::getNukeDamage()
+{
+	return this->nuke_damage;
+}
+
+int& Player::getNukeFlakDamage()
+{
+	return this->nuke_flak_damage;
 }
 
 void Player::setMenuFreeze(bool menu_cooldown)
@@ -343,7 +432,7 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 			switch (this->weapon_type)
 			{
 			case 1:
-				this->bullets.push_back(Bullet(player_position, angle));
+				this->bullets.push_back(Bullet(this->bullet_texture, player_position, angle));
 				break;
 			case 2:
 				if (this->laser_ammo > 0)
@@ -356,7 +445,7 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 				if (this->plasma_ammo > 0)
 				{
 					this->plasma_ammo--;
-					this->plasmas.push_back(Plasma(player_position, angle));
+					this->plasmas.push_back(Plasma(this->plasma_texture,player_position, angle));
 				}
 				break;
 			case 4:
@@ -370,9 +459,9 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 				if (this->tri_ammo > 0)
 				{
 					this->tri_ammo--;
-					this->tricannons.push_back(TriCannon(player_position, angle-2.5f));
-					this->tricannons.push_back(TriCannon(player_position, angle));
-					this->tricannons.push_back(TriCannon(player_position, angle+2.5f));
+					this->tricannons.push_back(TriCannon(this->tri_texture,player_position, angle-2.5f));
+					this->tricannons.push_back(TriCannon(this->tri_texture, player_position, angle));
+					this->tricannons.push_back(TriCannon(this->tri_texture, player_position, angle+2.5f));
 				}
 				break;
 			case 6:
@@ -380,6 +469,13 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 				{
 					this->mine_ammo--;
 					this->mines.push_back(Mine(mine_texture, player_position, angle));
+				}
+				break;
+			case 7:
+				if (this->nuke_ammo > 0)
+				{
+					this->nuke_ammo--;
+					this->nukes.push_back(Nuke(nuke_texture, player_position, angle));
 				}
 				break;
 			default:
@@ -391,38 +487,98 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
 		{
 			this->weapon_type = 1;
-			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.25f;
-			this->maxDelayShoot = 0.25f;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) && this->laser_ammo > 0)
 		{
 			this->weapon_type = 2;
-			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.35f;
-			this->maxDelayShoot = 0.35f;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) && this->plasma_ammo > 0)
 		{
 			this->weapon_type = 3;
-			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.1f;
-			this->maxDelayShoot = 0.1f;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4) && this->rocket_ammo > 0)
 		{
 			this->weapon_type = 4;
-			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.85f;
-			this->maxDelayShoot = 0.85f;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5) && this->tri_ammo > 0)
 		{
 			this->weapon_type = 5;
-			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.25f;
-			this->maxDelayShoot = 0.25f;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num6) && this->mine_ammo > 0)
 		{
 			this->weapon_type = 6;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && this->nuke_ammo > 0)
+		{
+			this->weapon_type = 7;
+		}
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+		{
+			if (!rightclick)
+			{
+				rightclick = 1;
+				this->type_runner = this->weapon_type + 1;
+				if (this->type_runner == 2 && this->laser_ammo <= 0)
+					this->type_runner++;
+				if (this->type_runner == 3 && this->plasma_ammo <= 0)
+					this->type_runner++;
+				if (this->type_runner == 4 && this->rocket_ammo <= 0)
+					this->type_runner++;
+				if (this->type_runner == 5 && this->tri_ammo <= 0)
+					this->type_runner++;
+				if (this->type_runner == 6 && this->mine_ammo <= 0)
+					this->type_runner++;
+				if (type_runner > 6)
+					this->type_runner = 1;
+
+				this->weapon_type = this->type_runner;
+			}
+		}
+		else
+		{
+			rightclick = 0;
+		}
+
+		//Update Type Weapon
+		switch (this->weapon_type)
+		{
+		case 1:
+			this->weapon_type = 1;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.25f;
+			this->maxDelayShoot = 0.25f;
+			break;
+		case 2:
+			this->weapon_type = 2;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.35f;
+			this->maxDelayShoot = 0.35f;
+			break;
+		case 3:
+			this->weapon_type = 3;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.1f;
+			this->maxDelayShoot = 0.1f;
+			break;
+		case 4:
+			this->weapon_type = 4;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.85f;
+			this->maxDelayShoot = 0.85f;
+			break;
+		case 5:
+			this->weapon_type = 5;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.25f;
+			this->maxDelayShoot = 0.25f;
+			break;
+		case 6:
+			this->weapon_type = 6;
 			this->delayShoot = this->delayShoot / this->maxDelayShoot * 0.7f;
 			this->maxDelayShoot = 0.7f;
+			break;
+		case 7:
+			this->weapon_type = 7;
+			this->delayShoot = this->delayShoot / this->maxDelayShoot * 1.5f;
+			this->maxDelayShoot = 1.5f;
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -453,6 +609,40 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 				this->decayRate = 1.7f;
 		}
 	}
+	//Hp bar
+	if (((float)this->hp / this->maxHp) * 100 >= 75)
+	{
+		this->hpBar.setSize(sf::Vector2f(80.f * ((float)this->hp / this->maxHp), 5.f));
+		this->hpBar.setFillColor(sf::Color(51, 255, 51));
+
+		this->hpBarMax.setFillColor(sf::Color(11, 71, 11));
+	}
+	else if (((float)this->hp / this->maxHp) * 100 >= 30 && ((float)this->hp / this->maxHp) * 100 < 75)
+	{
+		this->hpBar.setSize(sf::Vector2f(80.f * ((float)this->hp / this->maxHp), 5.f));
+		this->hpBar.setFillColor(sf::Color(255, 255, 51));
+
+		this->hpBarMax.setFillColor(sf::Color(71, 71, 11));
+	}
+	else
+	{
+		this->hpBar.setSize(sf::Vector2f(80.f * ((float)this->hp / this->maxHp), 5.f));
+		this->hpBar.setFillColor(sf::Color(255, 51, 51));
+
+		this->hpBarMax.setFillColor(sf::Color(71, 11, 11));
+	}
+	this->hpBar.setPosition(sf::Vector2f(this->player_position) + sf::Vector2f(0.f, 55.f));
+	this->hpBarMax.setPosition(sf::Vector2f(this->player_position) + sf::Vector2f(0.f, 55.f));
+
+	//Shield Bar
+	this->shieldBar.setSize(sf::Vector2f(80.f * ((float)this->shield / this->maxShield), 5.f));
+	this->shieldBar.setPosition(sf::Vector2f(this->player_position) + sf::Vector2f(0.f, 50.f));
+	this->shieldBarMax.setPosition(sf::Vector2f(this->player_position) + sf::Vector2f(0.f, 50.f));
+
+	//Repair Bar
+	this->repairBar.setSize(sf::Vector2f(80.f * (this->repaired / this->repairRequired), 5.f));
+	this->repairBar.setPosition(sf::Vector2f(this->player_position) + sf::Vector2f(0.f, 50.f));
+	this->repairBarMax.setPosition(sf::Vector2f(this->player_position) + sf::Vector2f(0.f, 50.f));
 
 	//Time Update
 	if (this->delayShoot < this->maxDelayShoot)
@@ -489,5 +679,25 @@ void Player::renderPlayer(sf::RenderTarget& target)
 	{
 		this->mines[i].renderMine(target);
 	}
+	for (int i = 0; i < this->nukes.size(); i++)
+	{
+		this->nukes[i].renderNuke(target);
+	}
+	for (int i = 0; i < this->nuke_flaks.size(); i++)
+	{
+		this->nuke_flaks[i].renderBullet(target);
+	}
 	target.draw(player_sprite);
+	if (!hull_breach)
+	{
+		target.draw(hpBarMax);
+		target.draw(hpBar);
+		target.draw(shieldBarMax);
+		target.draw(shieldBar);
+	}
+	else
+	{
+		target.draw(repairBarMax);
+		target.draw(repairBar);
+	}
 }

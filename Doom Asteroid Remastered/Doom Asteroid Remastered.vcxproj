@@ -159,6 +159,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Mine.cpp" />
+    <ClCompile Include="Nuke.cpp" />
     <ClCompile Include="Plasma.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rocket.cpp" />
@@ -173,11 +174,21 @@
     <ClInclude Include="Laser.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Mine.h" />
+    <ClInclude Include="Nuke.h" />
     <ClInclude Include="Plasma.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Rocket.h" />
     <ClInclude Include="Scoreboard.h" />
     <ClInclude Include="TriCannon.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Doom Asteroid Remastered.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
+    <Image Include="Images\asteroid_icon.ico" />
+    <Image Include="images\icon3.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

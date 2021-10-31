@@ -8,6 +8,7 @@
 class Plasma
 {
 private:
+	sf::Texture* plasma_texture;
 	sf::CircleShape plasma;
 
 	float speed;
@@ -15,7 +16,7 @@ private:
 	sf::Vector2f velocity;
 
 public:
-	Plasma(sf::Vector2f player_position, float angle);
+	Plasma(sf::Texture* texture, sf::Vector2f player_position, float angle);
 
 	sf::FloatRect getGlobalBounds();
 	sf::Vector2f get_position();

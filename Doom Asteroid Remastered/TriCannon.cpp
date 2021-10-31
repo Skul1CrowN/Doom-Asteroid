@@ -1,15 +1,17 @@
 #include "TriCannon.h"
 
-TriCannon::TriCannon(sf::Vector2f player_position, float angle)
+TriCannon::TriCannon(sf::Texture* texture, sf::Vector2f player_position, float angle)
 {
+	this->tri_texture = texture;
+
 	this->tricannon.setSize(sf::Vector2f(15.f, 5.f));
 	this->tricannon.setOrigin(sf::Vector2f(7.5f, 2.5f));
-	this->tricannon.setFillColor(sf::Color(204,0,255));
+	this->tricannon.setTexture(this->tri_texture);
 
 	this->tricannon.setPosition(player_position);
 	this->tricannon.setRotation(90 + angle);
 	this->angle = angle;
-	this->speed = 900.f;
+	this->speed = 1000.f;
 }
 
 sf::FloatRect TriCannon::getGlobalBounds()

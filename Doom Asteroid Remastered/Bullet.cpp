@@ -8,16 +8,17 @@
 
 #include<iostream>
 #include<cmath>
-Bullet::Bullet(sf::Vector2f player_position, float angle)
+Bullet::Bullet(sf::Texture *texture,sf::Vector2f player_position, float angle)
 {
+	this->bullet_texture = texture;
 	this->bullet.setSize(sf::Vector2f(15.f, 5.f));
 	this->bullet.setOrigin(sf::Vector2f(7.5f, 2.5f));
-	this->bullet.setFillColor(sf::Color::Yellow);
+	this->bullet.setTexture(this->bullet_texture);
 
 	this->bullet.setPosition(player_position);
 	this->bullet.setRotation(90 + angle);
 	this->angle = angle;
-	this->speed = 900.f;
+	this->speed = 1000.f;
 }
 
 sf::FloatRect Bullet::getGlobalBounds()

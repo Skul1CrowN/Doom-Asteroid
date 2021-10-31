@@ -23,11 +23,17 @@ Menu::Menu(sf::RenderWindow* window)
 	this->play_text.setOrigin(sf::Vector2f(this->play_text.getLocalBounds().width / 2, this->play_text.getLocalBounds().height / 2));
 	this->play_text.setPosition(sf::Vector2f(960.f, 450.f));
 
+	this->tutorial_text.setFont(font);
+	this->tutorial_text.setCharacterSize(36);
+	this->tutorial_text.setString("Tutorial");
+	this->tutorial_text.setOrigin(sf::Vector2f(this->tutorial_text.getLocalBounds().width / 2, this->tutorial_text.getLocalBounds().height / 2));
+	this->tutorial_text.setPosition(sf::Vector2f(960.f, 550.f));
+
 	this->score_text.setFont(font);
 	this->score_text.setCharacterSize(36);
 	this->score_text.setString("Leaderboard");
 	this->score_text.setOrigin(sf::Vector2f(this->score_text.getLocalBounds().width / 2, this->score_text.getLocalBounds().height / 2));
-	this->score_text.setPosition(sf::Vector2f(960.f, 600.f));
+	this->score_text.setPosition(sf::Vector2f(960.f, 650.f));
 
 	this->quit_text.setFont(font);
 	this->quit_text.setCharacterSize(36);
@@ -53,13 +59,13 @@ Menu::Menu(sf::RenderWindow* window)
 	this->continue_text.setCharacterSize(36);
 	this->continue_text.setString("Continue");
 	this->continue_text.setOrigin(sf::Vector2f(this->continue_text.getLocalBounds().width/2, this->continue_text.getLocalBounds().height / 2));
-	this->continue_text.setPosition(sf::Vector2f(960.f, 400.f));
+	this->continue_text.setPosition(sf::Vector2f(960.f, 500.f));
 
 	this->abandon_text.setFont(font);
 	this->abandon_text.setCharacterSize(36);
 	this->abandon_text.setString("Abandon");
 	this->abandon_text.setOrigin(sf::Vector2f(this->abandon_text.getLocalBounds().width/2, this->abandon_text.getLocalBounds().height / 2));
-	this->abandon_text.setPosition(sf::Vector2f(960.f, 500.f));
+	this->abandon_text.setPosition(sf::Vector2f(960.f, 650.f));
 
 	//Config Menu
 	this->config_texture.loadFromFile("Images/config_background.png");
@@ -140,6 +146,25 @@ Menu::Menu(sf::RenderWindow* window)
 	this->final_score_text.setCharacterSize(36);
 	this->final_score_text.setPosition(sf::Vector2f(960.f, 540.f));
 
+	//Tutorial
+	this->asteroid_texture.loadFromFile("Images/Asteroid.png");
+
+	this->how_texture.loadFromFile("Images/how_background.png");
+	this->how_background.setTexture(this->how_texture);
+	
+	this->tutorial_texture.loadFromFile("Images/howtoplay.png");
+	this->tutorial_sprite.setTexture(this->tutorial_texture);
+	this->tutorial_sprite.setScale(sf::Vector2f(0.95f, 0.95f));
+	this->tutorial_sprite.setOrigin(sf::Vector2f(this->tutorial_sprite.getLocalBounds().width / 2, this->tutorial_sprite.getLocalBounds().height / 2));
+	this->tutorial_sprite.setPosition(sf::Vector2f(960.f, 540.f));
+
+	this->tutorial_back.setFont(font);
+	this->tutorial_back.setCharacterSize(36);
+	this->tutorial_back.setString("Back");
+	this->tutorial_back.setOrigin(sf::Vector2f(this->back_text.getLocalBounds().width / 2, this->back_text.getLocalBounds().height / 2));
+	this->tutorial_back.setPosition(180.f, 1000.f);
+
+	//Debounce
 	this->mouseheld = 0;
 	this->mouseheldTime = 0.0f;
 
@@ -201,6 +226,23 @@ void Menu::updateMenuButton(float deltaTime)
 		{
 			this->play_text.setScale(sf::Vector2f(1.0f, 1.0f));
 			this->play_text.setFillColor(sf::Color(255, 255, 255));
+		}
+
+		//Tutorial
+		if (this->tutorial_text.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition())))
+		{
+			this->tutorial_text.setScale(sf::Vector2f(1.1f, 1.1f));
+			this->tutorial_text.setFillColor(sf::Color(0, 255, 0));
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !mouseheld && !transition)
+			{
+				this->rgb_asteroid.push_back(Enemy(&this->asteroid_texture,10,10,0.f,200, sf::Vector2f(1585.f,830.f),0.73f,0));
+				this->updateMenuState(4);
+			}
+		}
+		else
+		{
+			this->tutorial_text.setScale(sf::Vector2f(1.0f, 1.0f));
+			this->tutorial_text.setFillColor(sf::Color(255, 255, 255));
 		}
 
 		//Score
@@ -458,6 +500,51 @@ void Menu::updateNameInput(sf::Event& event, float deltaTime)
 	}
 }
 
+void Menu::updateTutorial(float deltaTime)
+{
+	//Mouse Debounce
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		this->mouseheldTime += deltaTime;
+	else
+		this->mouseheldTime = 0;
+
+	if (this->mouseheldTime >= 0.3f)
+		this->mouseheld = 1;
+	else
+		this->mouseheld = 0;
+
+	//Transition Debounce
+	if (transition)
+	{
+		if (transitionCooldown < 0.3f)
+			this->transitionCooldown += deltaTime;
+		else
+			this->transition = 0;
+	}
+	else
+		this->transitionCooldown = 0.0f;
+
+	//Back
+	if (this->tutorial_back.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition())))
+	{
+		this->tutorial_back.setScale(sf::Vector2f(1.1f, 1.1f));
+		this->tutorial_back.setFillColor(sf::Color(255, 0, 0));
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !mouseheld && !transition)
+		{
+			this->updateMenuState(0);
+			this->rgb_asteroid.clear();
+		}
+	}
+	else
+	{
+		this->tutorial_back.setScale(sf::Vector2f(1.0f, 1.0f));
+		this->tutorial_back.setFillColor(sf::Color(255, 255, 255));
+	}
+
+	for(int i=0;i<rgb_asteroid.size();i++)
+		this->rgb_asteroid[i].updateEnemy(window, sf::Vector2f(0.f,0.f), 0, deltaTime);
+}
+
 void Menu::updateDifficulty()
 {
 	this->difficulty_input = (this->difficulty_input + 1) % 5;
@@ -544,6 +631,8 @@ void Menu::drawMainMenu()
 
 	this->window->draw(this->play_text);
 
+	this->window->draw(this->tutorial_text);
+
 	this->window->draw(this->score_text);
 
 	this->window->draw(this->quit_text);
@@ -581,6 +670,22 @@ void Menu::drawConfig()
 void Menu::drawLeaderBoard()
 {
 	this->window->clear();
+
+	this->window->display();
+}
+
+void Menu::drawTutorial()
+{
+	this->window->clear();
+
+	this->window->draw(this->how_background);
+
+	this->window->draw(this->tutorial_sprite);
+
+	for (int i = 0; i < rgb_asteroid.size(); i++)
+		this->rgb_asteroid[i].renderEnemies(*this->window);
+
+	this->window->draw(this->tutorial_back);
 
 	this->window->display();
 }

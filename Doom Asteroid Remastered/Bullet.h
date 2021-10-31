@@ -9,13 +9,14 @@
 class Bullet
 {
 private:
+	sf::Texture* bullet_texture;
 	sf::RectangleShape bullet;
 
 	float angle;
 	float speed;
 	sf::Vector2f velocity;
 public:
-	Bullet(sf::Vector2f player_position, float angle);
+	Bullet(sf::Texture* texture, sf::Vector2f player_position, float angle);
 
 	sf::FloatRect getGlobalBounds();
 	sf::Vector2f get_position();

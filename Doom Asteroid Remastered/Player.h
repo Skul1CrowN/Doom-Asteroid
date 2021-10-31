@@ -12,6 +12,7 @@
 #include "Rocket.h"
 #include "TriCannon.h"
 #include "Mine.h"
+#include "Nuke.h"
 
 class Player
 {
@@ -48,19 +49,25 @@ private:
 	int flak_damage;
 	int tri_damage;
 	int mine_damage;
+	int nuke_damage;
+	int nuke_flak_damage;
 	int weapon_type;
-	//Time
-	float delayShoot;
-	float maxDelayShoot;
+	int type_runner;
 	// 1 Normal GUn
 	// 2 Laser Shot
 	// 3 Plasma Gun
 	// 4 Rocket Launcher
 	// 5 Tri-Cannon Gun
 	// 6 Mine Launcher
+	// 7 Nuke
+
+	//Time
+	float delayShoot;
+	float maxDelayShoot;
 
 	//Mormal Bullet
 	std::vector<Bullet> bullets;
+	sf::Texture* bullet_texture;
 
 	//Laser Shot
 	std::vector<Laser> lasers;
@@ -68,6 +75,7 @@ private:
 
 	//Plasma Gun
 	std::vector<Plasma> plasmas;
+	sf::Texture* plasma_texture;
 	int plasma_ammo;
 
 	//Rocket Launcher
@@ -77,26 +85,50 @@ private:
 	int rocket_ammo;
 
 	//Tri Cannon
-	sf::Texture* mine_texture;
+	sf::Texture* tri_texture;
 	std::vector<TriCannon> tricannons;
 	int tri_ammo;
 
 	//Mine Launcher
+	sf::Texture* mine_texture;
 	std::vector<Mine> mines;
 	int mine_ammo;
 
+	//Nuke
+	sf::Texture* nuke_texture;
+	sf::Texture* nukeFlak_texture;
+	std::vector<Nuke> nukes;
+	std::vector<Bullet> nuke_flaks;
+	int nuke_ammo;
+
+	//Player HP Bar
+	sf::RectangleShape hpBar;
+	sf::RectangleShape hpBarMax;
+
+	//Player Shield Bar
+	sf::RectangleShape shieldBar;
+	sf::RectangleShape shieldBarMax;
+
+	//Player Repair Bar
+	sf::RectangleShape repairBar;
+	sf::RectangleShape repairBarMax;
+
 	//System
 	bool menu_cooldown;
+	bool rightclick;
 public:
-	Player(sf::Texture* texture, sf::Texture* rocket, sf::Texture* mine, int integrity);
+	Player(sf::Texture* texture, sf::Texture* bullet, sf::Texture* plasma, sf::Texture* rocket, sf::Texture* tricannon, sf::Texture* mine, sf::Texture* nuke, sf::Texture* nukeFlak, int integrity);
 
 	std::vector<Bullet>& get_bullets();
 	std::vector<Laser>& get_lasers();
 	std::vector<Plasma>& get_plasmas();
 	std::vector<Rocket>& get_rockets();
 	std::vector<Bullet>& get_flaks();
-	std::vector<Mine>& get_mines();
 	std::vector<TriCannon>& get_tricannons();
+	std::vector<Mine>& get_mines();
+	std::vector<Nuke>& get_nukes();
+	std::vector<Bullet>& get_nukeFlak();
+	
 	sf::FloatRect getGlobalBounds();
 	sf::Vector2f getPosition();
 	int& getIntegrity();
@@ -111,7 +143,9 @@ public:
 	int& getRocketAmmo();
 	int& getTriAmmo();
 	int& getMineAmmo();
+	int& getNukeAmmo();
 	void explosionFlak(sf::Vector2f position);
+	void nukeExplosionFlak(sf::Vector2f position);
 
 	bool& getHullBreach();
 	float& getRepaired();
@@ -124,6 +158,8 @@ public:
 	int& getFlakDamage();
 	int& getTriDamage();
 	int& getMineDamage();
+	int& getNukeDamage();
+	int& getNukeFlakDamage();
 
 	void setMenuFreeze(bool menu_cooldown);
 	

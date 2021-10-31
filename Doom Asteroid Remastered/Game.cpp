@@ -13,8 +13,13 @@ Game::Game(sf::RenderWindow* window)
 
 	//Player
 	this->player_texture.loadFromFile("Images/Spaceship.png");
+	this->bullet_texture.loadFromFile("Images/Bullet.png");
+	this->plasma_texture.loadFromFile("Images/Plasma.png");
 	this->rocket_texture.loadFromFile("Images/Rocket.png");
+	this->tri_texture.loadFromFile("Images/TriBullet.png");
 	this->mine_texture.loadFromFile("Images/Mine.png");
+	this->nuke_texture.loadFromFile("Images/Nuke.png");
+	this->nukeFlak_texture.loadFromFile("Images/NukeFlak.png");
 	this->world_alive = 1;
 
 	//Enemy
@@ -38,6 +43,7 @@ Game::Game(sf::RenderWindow* window)
 	this->item_texture[4].loadFromFile("Images/Rocket_Item.png");
 	this->item_texture[5].loadFromFile("Images/TriCannon_Item.png");
 	this->item_texture[6].loadFromFile("Images/Mine_Item.png");
+	this->item_texture[7].loadFromFile("Images/Nuke_Item.png");
 
 	//Weapon Icon
 	this->weapon_texture[0].loadFromFile("Images/Normal_Item.png");
@@ -46,12 +52,14 @@ Game::Game(sf::RenderWindow* window)
 	this->weapon_texture[3].loadFromFile("Images/Rocket_Item.png");
 	this->weapon_texture[4].loadFromFile("Images/TriCannon_Item.png");
 	this->weapon_texture[5].loadFromFile("Images/Mine_Item.png");
+	this->weapon_texture[6].loadFromFile("Images/Nuke_Item.png");
 
 	this->weapon_disabled[0].loadFromFile("Images/Laser_Item_Disabled.png");
 	this->weapon_disabled[1].loadFromFile("Images/Plasma_Item_Disabled.png");
 	this->weapon_disabled[2].loadFromFile("Images/Rocket_Item_Disabled.png");
 	this->weapon_disabled[3].loadFromFile("Images/TriCannon_Item_Disabled.png");
 	this->weapon_disabled[4].loadFromFile("Images/Mine_Item_Disabled.png");
+	this->weapon_disabled[5].loadFromFile("Images/Nuke_Item_Disabled.png");
 
 	//Score
 	this->score = 0;
@@ -111,13 +119,14 @@ void Game::InitUI()
 
 	//Integrity UI
 	this->integrity_indicator.setFont(this->font);
-	this->integrity_indicator.setPosition(50.f, this->window->getSize().y - 50.f);
+	this->integrity_indicator.setPosition(75.f, this->window->getSize().y - 55.f);
 	this->integrity_indicator.setCharacterSize(16);
 
 	this->world_texture.loadFromFile("Images/World.png");
-	this->world_icon.setTexture(this->hp_texture);
+	this->world_icon.setTexture(this->world_texture);
 	this->world_icon.setScale(sf::Vector2f(0.10f, 0.10f));
-	this->world_icon.setPosition(50.f, 50.f);
+	this->world_icon.setColor(sf::Color(51, 255, 255));
+	this->world_icon.setPosition(50.f, this->window->getSize().y - 55.f);
 
 	this->integrityBar.setFillColor(sf::Color(51, 255, 255));
 	this->integrityBar.setPosition(50.f, this->window->getSize().y - 30.f);
@@ -174,12 +183,19 @@ void Game::InitUI()
 	this->weapon_icon.setScale(sf::Vector2f(0.7f, 0.7f));
 	this->weapon_icon.setPosition(50.f, 105.f);
 
-	this->weapon_selection[0].setTexture(this->weapon_texture[0]);
-	this->weapon_selection[1].setTexture(this->weapon_disabled[0]);
-	this->weapon_selection[2].setTexture(this->weapon_disabled[1]);
-	this->weapon_selection[3].setTexture(this->weapon_disabled[2]);
-	this->weapon_selection[4].setTexture(this->weapon_disabled[3]);
-	this->weapon_selection[5].setTexture(this->weapon_disabled[4]);
+	//Ammo UI
+	for (int i = 0; i < 6; i++)
+	{
+		this->ammo_list[i].setFont(this->font);
+		this->ammo_list[i].setPosition(75.f, 162.f + 20.f * i);
+		this->ammo_list[i].setCharacterSize(12);
+	}
+
+	for (int i = 0; i < 6; i++)
+	{
+		this->weapon_ammo[i].setScale(sf::Vector2f(0.3f, 0.3f));
+		this->weapon_ammo[i].setPosition(50.f, 160.f + 20.f * i);;
+	}
 }
 
 void Game::UpdateUI(int i)
@@ -296,10 +312,88 @@ void Game::UpdateUI(int i)
 		else
 			this->ammo_amount.setFillColor(sf::Color(255, 255, 255));
 		break;
+	case 7:
+		this->weapon_icon.setTexture(this->weapon_texture[6]);
+		this->weapon_name.setString("Nuke");
+		this->ammo_amount.setString(std::to_string(this->player[i].getNukeAmmo()));
+		if (this->player[i].getNukeAmmo() <= 0)
+			this->ammo_amount.setFillColor(sf::Color(255, 51, 51));
+		else
+			this->ammo_amount.setFillColor(sf::Color(255, 255, 255));
 	default:
 		break;
-	}	
+	}
+	//Ammo List UI
+	this->ammo_list[0].setString(std::to_string(this->player[i].getLaserAmmo()));
+	if (this->player[i].getLaserAmmo() <= 0)
+	{
+		this->weapon_ammo[0].setTexture(weapon_disabled[0]);
+		this->ammo_list[0].setFillColor(sf::Color(101, 101, 101));
+	}
+	else
+	{
+		this->weapon_ammo[0].setTexture(weapon_texture[1]);
+		this->ammo_list[0].setFillColor(sf::Color(255, 255, 255));
+	}
 
+	this->ammo_list[1].setString(std::to_string(this->player[i].getPlasmaAmmo()));
+	if (this->player[i].getPlasmaAmmo() <= 0)
+	{
+		this->weapon_ammo[1].setTexture(weapon_disabled[1]);
+		this->ammo_list[1].setFillColor(sf::Color(101, 101, 101));
+	}
+	else
+	{
+		this->weapon_ammo[1].setTexture(weapon_texture[2]);
+		this->ammo_list[1].setFillColor(sf::Color(255, 255, 255));
+	}
+
+	this->ammo_list[2].setString(std::to_string(this->player[i].getRocketAmmo()));
+	if (this->player[i].getRocketAmmo() <= 0)
+	{
+		this->weapon_ammo[2].setTexture(weapon_disabled[2]);
+		this->ammo_list[2].setFillColor(sf::Color(101, 101, 101));
+	}
+	else
+	{
+		this->weapon_ammo[2].setTexture(weapon_texture[3]);
+		this->ammo_list[2].setFillColor(sf::Color(255, 255, 255));
+	}
+
+	this->ammo_list[3].setString(std::to_string(this->player[i].getTriAmmo()));
+	if (this->player[i].getTriAmmo() <= 0)
+	{
+		this->weapon_ammo[3].setTexture(weapon_disabled[3]);
+		this->ammo_list[3].setFillColor(sf::Color(101, 101, 101));
+	}
+	else
+	{
+		this->weapon_ammo[3].setTexture(weapon_texture[4]);
+		this->ammo_list[3].setFillColor(sf::Color(255, 255, 255));
+	}
+
+	this->ammo_list[4].setString(std::to_string(this->player[i].getMineAmmo()));
+	if (this->player[i].getMineAmmo() <= 0)
+	{
+		this->weapon_ammo[4].setTexture(weapon_disabled[4]);
+		this->ammo_list[4].setFillColor(sf::Color(101, 101, 101));
+	}
+	else
+	{
+		this->weapon_ammo[4].setTexture(weapon_texture[5]);
+		this->ammo_list[4].setFillColor(sf::Color(255, 255, 255));
+	}
+	this->ammo_list[5].setString(std::to_string(this->player[i].getNukeAmmo()));
+	if (this->player[i].getNukeAmmo() <= 0)
+	{
+		this->weapon_ammo[5].setTexture(weapon_disabled[5]);
+		this->ammo_list[5].setFillColor(sf::Color(101, 101, 101));
+	}
+	else
+	{
+		this->weapon_ammo[5].setTexture(weapon_texture[6]);
+		this->ammo_list[5].setFillColor(sf::Color(255, 255, 255));
+	}
 }
 
 void Game::setDifficulty(int difficulty)
@@ -625,7 +719,7 @@ void Game::Update(float deltaTime)
 				{
 					if (this->player[i].get_rockets()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()))
 					{
-						hitted_index = k;
+						rocket_hitted_index = k;
 						this->player[i].explosionFlak(this->enemies[k].getPosition());
 						this->player[i].get_rockets().erase(this->player[i].get_rockets().begin() + j);
 						if (this->enemies[k].getHp() > 0)
@@ -649,10 +743,10 @@ void Game::Update(float deltaTime)
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
-							if (k > hitted_index)
-								hitted_index--;
-							if (k == hitted_index)
-								hitted_index = -1;
+							if (k > rocket_hitted_index)
+								rocket_hitted_index--;
+							if (k == rocket_hitted_index)
+								rocket_hitted_index = -1;
 							this->enemies.erase(this->enemies.begin() + k);
 						}
 						return;
@@ -672,7 +766,7 @@ void Game::Update(float deltaTime)
 				//Flak vs Enemy
 				for (int k = 0; k < enemies.size(); k++)
 				{
-					if (this->player[i].get_flaks()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()) && k != hitted_index)
+					if (this->player[i].get_flaks()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()) && k != rocket_hitted_index)
 					{
 						this->player[i].get_flaks().erase(this->player[i].get_flaks().begin() + j);
 						if (this->enemies[k].getHp() > 0)
@@ -795,6 +889,98 @@ void Game::Update(float deltaTime)
 				if (this->player[i].get_mines()[j].get_position().x > this->window->getSize().x || this->player[i].get_mines()[j].get_position().x < 0 || this->player[i].get_mines()[j].get_position().y > this->window->getSize().y || this->player[i].get_mines()[j].get_position().y < 0)
 				{
 					this->player[i].get_mines().erase(this->player[i].get_mines().begin() + j);
+					return;
+				}
+			}
+			//Nuke Update
+			for (int j = 0; j < player[i].get_nukes().size(); j++)
+			{
+				this->player[i].get_nukes()[j].updateNuke(deltaTime);
+				//Nuke vs Enemy
+				for (int k = 0; k < enemies.size(); k++)
+				{
+					if (this->player[i].get_nukes()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()))
+					{
+						nuke_hitted_index = k;
+						this->player[i].nukeExplosionFlak(this->enemies[k].getPosition());
+						this->player[i].get_nukes().erase(this->player[i].get_nukes().begin() + j);
+						if (this->enemies[k].getHp() > 0)
+							this->enemies[k].receiveDamage(this->player[i].getNukeDamage());
+						if (this->enemies[k].getHp() <= 0)
+						{
+							//Update Score
+							this->score += this->enemies[k].getScore() * this->score_multipier;
+							//Item Spawn
+							if (this->enemies[k].getLevel() == 10)
+							{
+								int item_type = rand() % 7;
+								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+							}
+							else
+							{
+								int item_chance = rand() % 100 + 1;
+								if (item_chance <= 10)
+								{
+									int item_type = rand() % 7;
+									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+								}
+							}
+							if (k > nuke_hitted_index)
+								nuke_hitted_index--;
+							if (k == nuke_hitted_index)
+								nuke_hitted_index = -1;
+							this->enemies.erase(this->enemies.begin() + k);
+						}
+						return;
+					}
+				}
+				//Window Check
+				if (this->player[i].get_nukes()[j].get_position().x > this->window->getSize().x || this->player[i].get_nukes()[j].get_position().x < 0 || this->player[i].get_nukes()[j].get_position().y > this->window->getSize().y || this->player[i].get_nukes()[j].get_position().y < 0)
+				{
+					this->player[i].get_nukes().erase(this->player[i].get_nukes().begin() + j);
+					return;
+				}
+			}
+			//Nuke Flak Update
+			for (int j = 0; j < player[i].get_nukeFlak().size(); j++)
+			{
+				this->player[i].get_nukeFlak()[j].updateBullet(deltaTime);
+				//Flak vs Enemy
+				for (int k = 0; k < enemies.size(); k++)
+				{
+					if (this->player[i].get_nukeFlak()[j].getGlobalBounds().intersects(this->enemies[k].getGlobalBounds()) && k != nuke_hitted_index)
+					{
+						this->player[i].get_nukeFlak().erase(this->player[i].get_nukeFlak().begin() + j);
+						if (this->enemies[k].getHp() > 0)
+							this->enemies[k].receiveDamage(this->player[i].getNukeFlakDamage());
+						if (this->enemies[k].getHp() <= 0)
+						{
+							//Update Score
+							this->score += this->enemies[k].getScore() * this->score_multipier;
+							//Item Spawn
+							if (this->enemies[k].getLevel() == 10)
+							{
+								int item_type = rand() % 7;
+								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+							}
+							else
+							{
+								int item_chance = rand() % 100 + 1;
+								if (item_chance <= 10)
+								{
+									int item_type = rand() % 7;
+									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
+								}
+							}
+							this->enemies.erase(this->enemies.begin() + k);
+						}
+						return;
+					}
+				}
+				//Window Check
+				if (this->player[i].get_nukeFlak()[j].get_position().x > this->window->getSize().x || this->player[i].get_nukeFlak()[j].get_position().x < 0 || this->player[i].get_nukeFlak()[j].get_position().y > this->window->getSize().y || this->player[i].get_nukeFlak()[j].get_position().y < 0)
+				{
+					this->player[i].get_nukeFlak().erase(this->player[i].get_nukeFlak().begin() + j);
 					return;
 				}
 			}
@@ -957,6 +1143,7 @@ void Game::Render()
 	}
 
 	//Integrity Bar
+	this->window->draw(world_icon);
 	this->window->draw(integrity_indicator);
 	this->window->draw(integrityBarMax);
 	this->window->draw(integrityBar);
@@ -968,6 +1155,11 @@ void Game::Render()
 	this->window->draw(weapon_name);
 	this->window->draw(ammo_amount);
 	this->window->draw(weapon_icon);
+	for (int i = 0; i < 6; i++)
+	{
+		this->window->draw(weapon_ammo[i]);
+		this->window->draw(ammo_list[i]);
+	}
 	
 	this->window->display();
 }
@@ -1003,7 +1195,7 @@ void Game::Init()
 	{
 	case 0://Easy
 		//Player
-		this->player.push_back(Player(&player_texture, &rocket_texture, &mine_texture, 1200));
+		this->player.push_back(Player(&player_texture,&bullet_texture, &plasma_texture, &rocket_texture, &tri_texture, &mine_texture, &nuke_texture, &nukeFlak_texture, 1200));
 		this->score_multipier = 0.5f;
 		//Enemy
 		this->space_level = 1;
@@ -1013,7 +1205,7 @@ void Game::Init()
 		break;
 	case 1://Medium
 		//Player
-		this->player.push_back(Player(&player_texture, &rocket_texture, &mine_texture, 1000));
+		this->player.push_back(Player(&player_texture, &bullet_texture, &plasma_texture, &rocket_texture, &tri_texture,&mine_texture, &nuke_texture, &nukeFlak_texture, 1000));
 		this->score_multipier = 1.0f;
 		//Enemy
 		this->space_level = 2;
@@ -1023,7 +1215,7 @@ void Game::Init()
 		break;
 	case 2://Hard
 		//Player
-		this->player.push_back(Player(&player_texture, &rocket_texture, &mine_texture, 800));
+		this->player.push_back(Player(&player_texture, &bullet_texture, &plasma_texture, &rocket_texture, &tri_texture, &mine_texture, &nuke_texture, &nukeFlak_texture, 800));
 		this->score_multipier = 1.5f;
 		//Enemy
 		this->space_level = 3;
@@ -1033,7 +1225,7 @@ void Game::Init()
 		break;
 	case 3://Insane
 		//Player
-		this->player.push_back(Player(&player_texture, &rocket_texture, &mine_texture, 600));
+		this->player.push_back(Player(&player_texture, &bullet_texture, &plasma_texture, &rocket_texture, &tri_texture, &mine_texture, &nuke_texture, &nukeFlak_texture, 600));
 		this->score_multipier = 2.0f;
 		//Enemy
 		this->space_level = 4;
@@ -1043,7 +1235,7 @@ void Game::Init()
 		break;
 	case 4://Apocalypse
 		//Player
-		this->player.push_back(Player(&player_texture, &rocket_texture, &mine_texture, 500));
+		this->player.push_back(Player(&player_texture, &bullet_texture, &plasma_texture, &rocket_texture, &tri_texture, &mine_texture, &nuke_texture, &nukeFlak_texture, 500));
 		this->score_multipier = 2.5f;
 		//Enemy
 		this->space_level = 5;
