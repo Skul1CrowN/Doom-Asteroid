@@ -1,5 +1,7 @@
 #pragma once
 #include "Enemy.h"
+#include "Music.h"
+
 #include<SFML/Graphics.hpp>
 #include<SFML/System.hpp>
 #include<SFML/Window.hpp>
@@ -87,6 +89,9 @@ private:
 	sf::Sprite tutorial_sprite;
 	sf::Text tutorial_back;
 
+	//Music
+	Music music;
+
 	//Mouse Debounce
 	bool mouseheld;
 	float mouseheldTime;
@@ -111,6 +116,10 @@ public:
 	void updateDifficulty();
 	void checktriggerPause();
 	void backToMenu(bool trigger);
+	void updateMusic();
+	void stopMusic();
+	void updateGameOverMusic();
+	void stopGameOverMusic();
 
 	int& getState();
 	std::string& getPlayerName();

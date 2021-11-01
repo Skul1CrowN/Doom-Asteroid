@@ -557,6 +557,22 @@ void Game::updateEnemyStat()
 	}
 }
 
+void Game::updateMusic()
+{
+	if (this->music.getGameMusic().getStatus() == sf::SoundSource::Stopped)
+	{
+		this->music.StopGameMusic();
+		this->music_index = (this->music_index + 1) % 5;
+		this->music.setGameMusicIndex(music_index);
+		this->music.PlayGameMusic();
+	}
+}
+
+void Game::stopMusic()
+{
+	this->music.StopGameMusic();
+}
+
 void Game::Update(float deltaTime)
 {
 	this->UpdateMousePos(window);
@@ -600,7 +616,7 @@ void Game::Update(float deltaTime)
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 7;
+								int item_type = rand() % 8;
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -608,7 +624,7 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 7;
+									int item_type = rand() % 8;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -643,7 +659,7 @@ void Game::Update(float deltaTime)
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 7;
+								int item_type = rand() % 8;
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -651,7 +667,7 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 7;
+									int item_type = rand() % 8;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -686,7 +702,7 @@ void Game::Update(float deltaTime)
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 7;
+								int item_type = rand() % 8;
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -694,7 +710,7 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 7;
+									int item_type = rand() % 8;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -731,7 +747,7 @@ void Game::Update(float deltaTime)
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 7;
+								int item_type = rand() % 8;
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -739,7 +755,7 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 7;
+									int item_type = rand() % 8;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -778,7 +794,7 @@ void Game::Update(float deltaTime)
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 7;
+								int item_type = rand() % 8;
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -786,7 +802,7 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 7;
+									int item_type = rand() % 8;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -821,7 +837,7 @@ void Game::Update(float deltaTime)
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 7;
+								int item_type = rand() % 8;
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -829,7 +845,7 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 7;
+									int item_type = rand() % 8;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -869,7 +885,7 @@ void Game::Update(float deltaTime)
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 7;
+								int item_type = rand() % 8;
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -877,7 +893,7 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 7;
+									int item_type = rand() % 8;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -913,7 +929,7 @@ void Game::Update(float deltaTime)
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 7;
+								int item_type = rand() % 8;
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -921,7 +937,7 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 7;
+									int item_type = rand() % 8;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -960,7 +976,7 @@ void Game::Update(float deltaTime)
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 7;
+								int item_type = rand() % 8;
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -968,7 +984,7 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 7;
+									int item_type = rand() % 8;
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -1075,8 +1091,8 @@ void Game::Update(float deltaTime)
 		else
 		{
 			this->space_level++;
-			if (this->space_level > 10)
-				this->space_level = 10;
+			if (this->space_level > this->space_limit)
+				this->space_level = this->space_limit;
 			this->timeIncreaseLevel = 0.0f;
 		}
 	}
@@ -1202,6 +1218,7 @@ void Game::Init()
 		this->damage_multipier = 1.f;
 		this->maxEnemies = 10;
 		this->maxTimeIncreaseSpawn = 180.f;
+		this->space_limit = 6;
 		break;
 	case 1://Medium
 		//Player
@@ -1212,6 +1229,7 @@ void Game::Init()
 		this->damage_multipier = 1.f;
 		this->maxEnemies = 15;
 		this->maxTimeIncreaseSpawn = 150.f;
+		this->space_limit = 7;
 		break;
 	case 2://Hard
 		//Player
@@ -1222,6 +1240,7 @@ void Game::Init()
 		this->damage_multipier = 2.f;
 		this->maxEnemies = 20;
 		this->maxTimeIncreaseSpawn = 120.f;
+		this->space_limit = 8;
 		break;
 	case 3://Insane
 		//Player
@@ -1232,6 +1251,7 @@ void Game::Init()
 		this->damage_multipier = 2.f;
 		this->maxEnemies = 25;
 		this->maxTimeIncreaseSpawn = 90.f;
+		this->space_limit = 9;
 		break;
 	case 4://Apocalypse
 		//Player
@@ -1242,8 +1262,12 @@ void Game::Init()
 		this->damage_multipier = 3.f;
 		this->maxEnemies = 30;
 		this->maxTimeIncreaseSpawn = 60.f;
+		this->space_limit = 10;
 		break;
 	default:
 		break;
 	}
+
+	this->music_index = rand() % 5;
+	this->music.setGameMusicIndex(music_index);
 }

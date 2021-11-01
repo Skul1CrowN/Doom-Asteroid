@@ -606,6 +606,36 @@ void Menu::backToMenu(bool trigger)
 		updateMenuState(0);
 }
 
+void Menu::updateMusic()
+{
+	//Music
+	if (this->music.getMenuMusic().getStatus() == sf::SoundSource::Stopped)
+	{
+		this->music.StopMenuMusic();
+		this->music.PlayMenuMusic();
+	}
+}
+
+void Menu::stopMusic()
+{
+	this->music.StopMenuMusic();
+}
+
+void Menu::updateGameOverMusic()
+{
+	//Music
+	if (this->music.getGameOverMusic().getStatus() == sf::SoundSource::Stopped)
+	{
+		this->music.StopGameOverMusic();
+		this->music.PlayGameOverMusic();
+	}
+}
+
+void Menu::stopGameOverMusic()
+{
+	this->music.StopGameOverMusic();
+}
+
 int& Menu::getState()
 {
 	return this->state;
@@ -644,6 +674,7 @@ void Menu::drawMainMenu()
 
 void Menu::drawConfig()
 {
+
 	this->window->clear();
 
 	this->window->draw(this->config_backgroound);
@@ -669,6 +700,7 @@ void Menu::drawConfig()
 
 void Menu::drawLeaderBoard()
 {
+
 	this->window->clear();
 
 	this->window->display();
@@ -676,6 +708,7 @@ void Menu::drawLeaderBoard()
 
 void Menu::drawTutorial()
 {
+
 	this->window->clear();
 
 	this->window->draw(this->how_background);

@@ -4,6 +4,7 @@
 #include "Item.h"
 #include "Menu.h"
 #include "Scoreboard.h"
+#include "Music.h"
 
 class Game
 {
@@ -75,6 +76,7 @@ private:
 	std::vector<Enemy> enemies;
 	sf::Texture enemy_texture[6];
 	int space_level;
+	int space_limit;
 
 	//Enemy Spawnset
 	std::string spawn_set[10] = {
@@ -135,6 +137,11 @@ private:
 	//Menu Cooldown
 	bool menu_cooldown;
 	float menu_freeze;
+
+	//Music
+	Music music;
+	int music_index = rand() % 5;
+	int previous = music_index;
 public:
 	Game(sf::RenderWindow* window);
 
@@ -154,6 +161,10 @@ public:
 	void SpawnEnemy();
 
 	void updateEnemyStat();
+
+	void updateMusic();
+
+	void stopMusic();
 
 	void Update(float deltaTime);
 

@@ -20,6 +20,7 @@ private:
 	//4 Rocket Ammo
 	//5 Tri-Cannon Ammo
 	//6 Mine Ammo
+	//7 Nuke
 public:
 	Item(sf::Texture* texture,sf::Vector2f init_position,int type);
 

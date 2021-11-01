@@ -19,6 +19,8 @@ int main()
 	bool menu_trans = 1;
 	bool game_init = 1;
 
+	int action;
+
 	while (window.isOpen())
 	{
 		deltaTime = clock.restart().asSeconds();
@@ -41,11 +43,14 @@ int main()
 		}
 		if (focus)
 		{
-			int action = menu.getState();
+			action = menu.getState();
 
 			switch (action)
 			{
 			case 0://Menu
+				game.stopMusic();
+				menu.stopGameOverMusic();
+				menu.updateMusic();
 				score.resetReturntoMenu();
 				menu.updateMenuButton(deltaTime);
 				menu.drawMainMenu();
@@ -56,9 +61,12 @@ int main()
 				game_init = 1;
 				menu.updateConfig(deltaTime);
 				menu.updateNameInput(ev, deltaTime);
+				menu.updateMusic();
 				menu.drawConfig();
 				break;
 			case 2:// Game
+				menu.stopMusic();
+				game.updateMusic();
 				if (menu_trans)
 				{
 					game.menuCoolDown();
@@ -82,11 +90,13 @@ int main()
 				score.updateButton(deltaTime);
 				score.updateScore();
 				score.render();
+				menu.updateMusic();
 				menu.backToMenu(score.returnToMenu());
 				break;
 			case 4: // Tutorial
 				menu.updateTutorial(deltaTime);
 				menu.drawTutorial();
+				menu.updateMusic();
 				break;
 			case 5:// Quit
 				window.close();
@@ -97,6 +107,8 @@ int main()
 				menu.drawPause();
 				break;
 			case 7: // Game Over
+				game.stopMusic();
+				menu.updateGameOverMusic();
 				menu.updateGameOver(deltaTime);
 				menu.drawGameOver();
 			default:
