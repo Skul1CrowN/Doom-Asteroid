@@ -15,4 +15,4 @@ UI:\
 *Added Health Bar of player's spaceship.\
 *Added Health Bar of Mine.\
 Control:\
-*Now you can change weapon via Right Click of available weapon rotation.
+*Now you can change weapon via Right Click of available weapon rotation(exclude Nuke).
