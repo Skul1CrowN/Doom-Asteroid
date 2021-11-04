@@ -1,9 +1,11 @@
 # Doom-Asteroid
 SFML Game Project\
 by Punnawit Wachirasethaherun a.k.a. Skul1CrowN\
+\
 V1.0b\
 *Released Beta Version\
 *Might have some bugs\
+\
 V1.1b (not released)\
 Weapon:\
 +Added Nuke Weapon (Press Ctrl to switch).\
