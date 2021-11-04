@@ -10,4 +10,4 @@ v.1.1b (not released)\
 *Adjust Item Rate Spawn\
 *Added Text effect when collects item or destroys asteroid\
 *Added Health Bar of player's spaceship\
-*Added Health Bar of Mine\
+*Added Health Bar of Mine
