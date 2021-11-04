@@ -1,5 +1,5 @@
 # Doom-Asteroid
-SFML Game Projec\
+SFML Game Project\
 by Punnawit Wachirasethaherun a.k.a. Skul1CrowN\
 V1.0b\
 *Released Beta Version\
