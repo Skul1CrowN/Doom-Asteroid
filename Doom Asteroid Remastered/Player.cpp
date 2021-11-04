@@ -259,6 +259,11 @@ float& Player::getRepairRequired()
 	return this->repairRequired;
 }
 
+bool& Player::getInvincibility()
+{
+	return this->invincibility;
+}
+
 int& Player::getNormalDamage()
 {
 	return this->normal_damage;
@@ -346,6 +351,11 @@ void Player::gainTriAmmo(int amount)
 void Player::gainMineAmmo(int amount)
 {
 	this->mine_ammo += amount;
+}
+
+void Player::gainNukeAmmo(int amount)
+{
+	this->nuke_ammo += amount;
 }
 
 void Player::receivedDamage(int damage)

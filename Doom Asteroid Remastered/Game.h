@@ -5,6 +5,7 @@
 #include "Menu.h"
 #include "Scoreboard.h"
 #include "Music.h"
+#include "Texttag.h"
 
 class Game
 {
@@ -112,6 +113,10 @@ private:
 	//Items
 	std::vector<Item> items;
 	sf::Texture item_texture[8];
+	std::string item_spawn_set = "HHHHHHHNWWWWWWWWWWWW";
+
+	//Texttag
+	std::vector<Texttag> texttags;
 
 	//Score
 	int score;

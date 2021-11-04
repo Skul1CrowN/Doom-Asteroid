@@ -24,6 +24,7 @@ private:
 public:
 	Item(sf::Texture* texture,sf::Vector2f init_position,int type);
 
+	sf::Vector2f getPosition();
 	sf::FloatRect getGlobalBounds();
 	int& getItem();
 

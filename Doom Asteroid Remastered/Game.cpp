@@ -613,10 +613,27 @@ void Game::Update(float deltaTime)
 						{
 							//Update Score
 							this->score += this->enemies[k].getScore() * this->score_multipier;
+							//Texttag
+							this->texttags.push_back(Texttag(&this->font, std::to_string((int)(this->enemies[k].getScore() * this->score_multipier)), this->enemies[k].getPosition()));
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 8;
+								int item_type;
+								char item_char = item_spawn_set[rand() % 20];
+								switch (item_char)
+								{
+								case 'H':
+									item_type = rand() % 2;
+									break;
+								case 'W':
+									item_type = rand() % 5 + 2;
+									break;
+								case 'N':
+									item_type = 7;
+									break;
+								default:
+									break;
+								}
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -624,7 +641,22 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 8;
+									int item_type;
+									char item_char = item_spawn_set[rand() % 20];
+									switch (item_char)
+									{
+									case 'H':
+										item_type = rand() % 2;
+										break;
+									case 'W':
+										item_type = rand() % 5 + 2;
+										break;
+									case 'N':
+										item_type = 7;
+										break;
+									default:
+										break;
+									}
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -656,10 +688,27 @@ void Game::Update(float deltaTime)
 						{
 							//Update Score
 							this->score += this->enemies[k].getScore() * this->score_multipier;
+							//Texttag
+							this->texttags.push_back(Texttag(&this->font, std::to_string((int)(this->enemies[k].getScore() * this->score_multipier)), this->enemies[k].getPosition()));
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 8;
+								int item_type;
+								char item_char = item_spawn_set[rand() % 20];
+								switch (item_char)
+								{
+								case 'H':
+									item_type = rand() % 2;
+									break;
+								case 'W':
+									item_type = rand() % 5 + 2;
+									break;
+								case 'N':
+									item_type = 7;
+									break;
+								default:
+									break;
+								}
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -667,7 +716,22 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 8;
+									int item_type;
+									char item_char = item_spawn_set[rand() % 20];
+									switch (item_char)
+									{
+									case 'H':
+										item_type = rand() % 2;
+										break;
+									case 'W':
+										item_type = rand() % 5 + 2;
+										break;
+									case 'N':
+										item_type = 7;
+										break;
+									default:
+										break;
+									}
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -699,10 +763,27 @@ void Game::Update(float deltaTime)
 						{
 							//Update Score
 							this->score += this->enemies[k].getScore() * this->score_multipier;
+							//Texttag
+							this->texttags.push_back(Texttag(&this->font, std::to_string((int)(this->enemies[k].getScore()* this->score_multipier)), this->enemies[k].getPosition()));
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 8;
+								int item_type;
+								char item_char = item_spawn_set[rand() % 20];
+								switch (item_char)
+								{
+								case 'H':
+									item_type = rand() % 2;
+									break;
+								case 'W':
+									item_type = rand() % 5 + 2;
+									break;
+								case 'N':
+									item_type = 7;
+									break;
+								default:
+									break;
+								}
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -710,7 +791,22 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 8;
+									int item_type;
+									char item_char = item_spawn_set[rand() % 20];
+									switch (item_char)
+									{
+									case 'H':
+										item_type = rand() % 2;
+										break;
+									case 'W':
+										item_type = rand() % 5 + 2;
+										break;
+									case 'N':
+										item_type = 7;
+										break;
+									default:
+										break;
+									}
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -744,10 +840,27 @@ void Game::Update(float deltaTime)
 						{
 							//Update Score
 							this->score += this->enemies[k].getScore() * this->score_multipier;
+							//Texttag
+							this->texttags.push_back(Texttag(&this->font, std::to_string((int)(this->enemies[k].getScore()* this->score_multipier)), this->enemies[k].getPosition()));
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 8;
+								int item_type;
+								char item_char = item_spawn_set[rand() % 20];
+								switch (item_char)
+								{
+								case 'H':
+									item_type = rand() % 2;
+									break;
+								case 'W':
+									item_type = rand() % 5 + 2;
+									break;
+								case 'N':
+									item_type = 7;
+									break;
+								default:
+									break;
+								}
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -755,7 +868,22 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 8;
+									int item_type;
+									char item_char = item_spawn_set[rand() % 20];
+									switch (item_char)
+									{
+									case 'H':
+										item_type = rand() % 2;
+										break;
+									case 'W':
+										item_type = rand() % 5 + 2;
+										break;
+									case 'N':
+										item_type = 7;
+										break;
+									default:
+										break;
+									}
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -791,10 +919,27 @@ void Game::Update(float deltaTime)
 						{
 							//Update Score
 							this->score += this->enemies[k].getScore() * this->score_multipier;
+							//Texttag
+							this->texttags.push_back(Texttag(&this->font, std::to_string((int)(this->enemies[k].getScore()* this->score_multipier)), this->enemies[k].getPosition()));
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 8;
+								int item_type;
+								char item_char = item_spawn_set[rand() % 20];
+								switch (item_char)
+								{
+								case 'H':
+									item_type = rand() % 2;
+									break;
+								case 'W':
+									item_type = rand() % 5 + 2;
+									break;
+								case 'N':
+									item_type = 7;
+									break;
+								default:
+									break;
+								}
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -802,7 +947,22 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 8;
+									int item_type;
+									char item_char = item_spawn_set[rand() % 20];
+									switch (item_char)
+									{
+									case 'H':
+										item_type = rand() % 2;
+										break;
+									case 'W':
+										item_type = rand() % 5 + 2;
+										break;
+									case 'N':
+										item_type = 7;
+										break;
+									default:
+										break;
+									}
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -834,10 +994,27 @@ void Game::Update(float deltaTime)
 						{
 							//Update Score
 							this->score += this->enemies[k].getScore() * this->score_multipier;
+							//Texttag
+							this->texttags.push_back(Texttag(&this->font, std::to_string((int)(this->enemies[k].getScore()* this->score_multipier)), this->enemies[k].getPosition()));
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 8;
+								int item_type;
+								char item_char = item_spawn_set[rand() % 20];
+								switch (item_char)
+								{
+								case 'H':
+									item_type = rand() % 2;
+									break;
+								case 'W':
+									item_type = rand() % 5 + 2;
+									break;
+								case 'N':
+									item_type = 7;
+									break;
+								default:
+									break;
+								}
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -845,7 +1022,22 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 8;
+									int item_type;
+									char item_char = item_spawn_set[rand() % 20];
+									switch (item_char)
+									{
+									case 'H':
+										item_type = rand() % 2;
+										break;
+									case 'W':
+										item_type = rand() % 5 + 2;
+										break;
+									case 'N':
+										item_type = 7;
+										break;
+									default:
+										break;
+									}
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -882,10 +1074,27 @@ void Game::Update(float deltaTime)
 						{
 							//Update Score
 							this->score += this->enemies[k].getScore() * this->score_multipier;
+							//Texttag
+							this->texttags.push_back(Texttag(&this->font, std::to_string((int)(this->enemies[k].getScore()* this->score_multipier)), this->enemies[k].getPosition()));
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 8;
+								int item_type;
+								char item_char = item_spawn_set[rand() % 20];
+								switch (item_char)
+								{
+								case 'H':
+									item_type = rand() % 2;
+									break;
+								case 'W':
+									item_type = rand() % 5 + 2;
+									break;
+								case 'N':
+									item_type = 7;
+									break;
+								default:
+									break;
+								}
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -893,7 +1102,22 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 8;
+									int item_type;
+									char item_char = item_spawn_set[rand() % 20];
+									switch (item_char)
+									{
+									case 'H':
+										item_type = rand() % 2;
+										break;
+									case 'W':
+										item_type = rand() % 5 + 2;
+										break;
+									case 'N':
+										item_type = 7;
+										break;
+									default:
+										break;
+									}
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -926,10 +1150,27 @@ void Game::Update(float deltaTime)
 						{
 							//Update Score
 							this->score += this->enemies[k].getScore() * this->score_multipier;
+							//Texttag
+							this->texttags.push_back(Texttag(&this->font, std::to_string((int)(this->enemies[k].getScore()* this->score_multipier)), this->enemies[k].getPosition()));
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 8;
+								int item_type;
+								char item_char = item_spawn_set[rand() % 20];
+								switch (item_char)
+								{
+								case 'H':
+									item_type = rand() % 2;
+									break;
+								case 'W':
+									item_type = rand() % 5 + 2;
+									break;
+								case 'N':
+									item_type = 7;
+									break;
+								default:
+									break;
+								}
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -937,7 +1178,22 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 8;
+									int item_type;
+									char item_char = item_spawn_set[rand() % 20];
+									switch (item_char)
+									{
+									case 'H':
+										item_type = rand() % 2;
+										break;
+									case 'W':
+										item_type = rand() % 5 + 2;
+										break;
+									case 'N':
+										item_type = 7;
+										break;
+									default:
+										break;
+									}
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -973,10 +1229,27 @@ void Game::Update(float deltaTime)
 						{
 							//Update Score
 							this->score += this->enemies[k].getScore() * this->score_multipier;
+							//Texttag
+							this->texttags.push_back(Texttag(&this->font, std::to_string((int)(this->enemies[k].getScore()* this->score_multipier)), this->enemies[k].getPosition()));
 							//Item Spawn
 							if (this->enemies[k].getLevel() == 10)
 							{
-								int item_type = rand() % 8;
+								int item_type;
+								char item_char = item_spawn_set[rand() % 20];
+								switch (item_char)
+								{
+								case 'H':
+									item_type = rand() % 2;
+									break;
+								case 'W':
+									item_type = rand() % 5 + 2;
+									break;
+								case 'N':
+									item_type = 7;
+									break;
+								default:
+									break;
+								}
 								this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 							}
 							else
@@ -984,7 +1257,22 @@ void Game::Update(float deltaTime)
 								int item_chance = rand() % 100 + 1;
 								if (item_chance <= 10)
 								{
-									int item_type = rand() % 8;
+									int item_type;
+									char item_char = item_spawn_set[rand() % 20];
+									switch (item_char)
+									{
+									case 'H':
+										item_type = rand() % 2;
+										break;
+									case 'W':
+										item_type = rand() % 5 + 2;
+										break;
+									case 'N':
+										item_type = 7;
+										break;
+									default:
+										break;
+									}
 									this->items.push_back(Item(&this->item_texture[item_type], this->enemies[k].getPosition(), item_type));
 								}
 							}
@@ -1044,24 +1332,35 @@ void Game::Update(float deltaTime)
 					{
 					case 0: // Repair
 						this->player[j].repairHP(15);
+						this->texttags.push_back(Texttag(&this->font, "+15 Health", this->items[i].getPosition()));
 						break;
 					case 1: // Shield
 						this->player[j].receivedShield(10);
+						this->texttags.push_back(Texttag(&this->font, "+10 Shield", this->items[i].getPosition()));
 						break;
 					case 2: // Laser Ammo
 						this->player[j].gainLaserAmmo(10);
+						this->texttags.push_back(Texttag(&this->font, "+10 Laser Ammo", this->items[i].getPosition()));
 						break;
 					case 3: // Plasma Ammo
-						this->player[j].gainPlasmaAmmo(30);
+						this->player[j].gainPlasmaAmmo(40);
+						this->texttags.push_back(Texttag(&this->font, "+40 Plasma Ammo", this->items[i].getPosition()));
 						break;
 					case 4: //Rocket Ammo
 						this->player[j].gainRocketAmmo(3);
+						this->texttags.push_back(Texttag(&this->font, "+3 Rocket Ammo", this->items[i].getPosition()));
 						break;
 					case 5: //Tri Ammo
 						this->player[j].gainTriAmmo(20);
+						this->texttags.push_back(Texttag(&this->font, "+20 Tri Ammo", this->items[i].getPosition()));
 						break;
 					case 6: //Mine Ammo
 						this->player[j].gainMineAmmo(5);
+						this->texttags.push_back(Texttag(&this->font, "+5 Mine Ammo", this->items[i].getPosition()));
+						break;
+					case 7: //Nuke
+						this->player[j].gainNukeAmmo(1);
+						this->texttags.push_back(Texttag(&this->font, "+1 Nuke", this->items[i].getPosition()));
 						break;
 					default:
 						break;
@@ -1069,6 +1368,23 @@ void Game::Update(float deltaTime)
 					this->items.erase(this->items.begin() + i);
 					return;
 				}
+			}
+		}
+
+		//Update Texttag
+		for (int i = 0; i < this->texttags.size(); i++)
+		{
+			this->texttags[i].updateTextTag(deltaTime);
+			if (this->texttags[i].getInitPosition().y - this->texttags[i].getPosition().y > 200.f)
+			{
+				this->texttags.erase(this->texttags.begin() + i);
+				break;
+			}
+
+			if (this->texttags[i].getPosition().y < 0.f)
+			{
+				this->texttags.erase(this->texttags.begin() + i);
+				break;
 			}
 		}
 
@@ -1127,6 +1443,10 @@ void Game::Render()
 	for (int i = 0; i < this->enemies.size(); i++)
 		this->enemies[i].renderEnemies(*this->window);
 	
+	//Texttag
+	for (int i = 0; i < this->texttags.size(); i++)
+		this->texttags[i].renderTextTag(*this->window);
+
 	//Player UI
 	this->window->draw(this->player_text);
 	this->window->draw(this->difficulty_text);
@@ -1191,6 +1511,9 @@ void Game::Reset()
 
 	//Item
 	this->items.clear();
+
+	//Texttag
+	this->texttags.clear();
 
 	//Score
 	this->score = 0;

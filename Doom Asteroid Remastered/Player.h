@@ -41,6 +41,9 @@ private:
 	float repairRequired;
 	float decayRate;
 
+	//Invincibility
+	bool invincibility;
+
 	//Combat
 	int normal_damage;
 	int laser_damage;
@@ -150,6 +153,7 @@ public:
 	bool& getHullBreach();
 	float& getRepaired();
 	float& getRepairRequired();
+	bool& getInvincibility();
 
 	int& getNormalDamage();
 	int& getLaserDamage();
@@ -172,6 +176,7 @@ public:
 	void gainRocketAmmo(int amount);
 	void gainTriAmmo(int amount);
 	void gainMineAmmo(int amount);
+	void gainNukeAmmo(int amount);
 
 	void receivedDamage(int damage);
 

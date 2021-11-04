@@ -154,7 +154,7 @@ Menu::Menu(sf::RenderWindow* window)
 	
 	this->tutorial_texture.loadFromFile("Images/howtoplay.png");
 	this->tutorial_sprite.setTexture(this->tutorial_texture);
-	this->tutorial_sprite.setScale(sf::Vector2f(0.95f, 0.95f));
+	this->tutorial_sprite.setScale(sf::Vector2f(0.98f, 0.98f));
 	this->tutorial_sprite.setOrigin(sf::Vector2f(this->tutorial_sprite.getLocalBounds().width / 2, this->tutorial_sprite.getLocalBounds().height / 2));
 	this->tutorial_sprite.setPosition(sf::Vector2f(960.f, 540.f));
 
@@ -235,7 +235,7 @@ void Menu::updateMenuButton(float deltaTime)
 			this->tutorial_text.setFillColor(sf::Color(0, 255, 0));
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !mouseheld && !transition)
 			{
-				this->rgb_asteroid.push_back(Enemy(&this->asteroid_texture,10,10,0.f,200, sf::Vector2f(1585.f,830.f),0.73f,0));
+				this->rgb_asteroid.push_back(Enemy(&this->asteroid_texture,10,10,0.f,200, sf::Vector2f(1610.f,835.f),0.73f,0));
 				this->updateMenuState(4);
 			}
 		}

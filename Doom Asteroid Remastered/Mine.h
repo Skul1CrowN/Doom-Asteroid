@@ -10,13 +10,19 @@ class Mine
 private:
 	sf::Texture* mine_texture;
 	sf::RectangleShape mine_sprite;
-	int health;
+	int maxHp;
+	int hp;
+
+	sf::Vector2f mine_position;
 
 	sf::Vector2f velocity;
 	float acceleration;
 	float angle;
 	float speed;
 
+	//Mine HpBar
+	sf::RectangleShape hpBar;
+	sf::RectangleShape hpBarMax;
 public:
 	Mine(sf::Texture* texture, sf::Vector2f player_position, float angle);
 

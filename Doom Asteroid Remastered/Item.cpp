@@ -13,6 +13,11 @@ Item::Item(sf::Texture* texture, sf::Vector2f init_position, int type)
 	this->item_type = type;
 }
 
+sf::Vector2f Item::getPosition()
+{
+	return item_sprite.getPosition();
+}
+
 sf::FloatRect Item::getGlobalBounds()
 {
 	return this->item_sprite.getGlobalBounds();

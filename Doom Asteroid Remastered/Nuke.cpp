@@ -4,7 +4,7 @@ Nuke::Nuke(sf::Texture* texture, sf::Vector2f player_position, float angle)
 {
 	this->nuke_texture = texture;
 	this->nuke_sprite.setSize(sf::Vector2f(80.f, 60.f));
-	this->nuke_sprite.setOrigin(sf::Vector2f(40.f, 15.f));
+	this->nuke_sprite.setOrigin(sf::Vector2f(40.f, 30.f));
 	this->nuke_sprite.setTexture(this->nuke_texture);
 
 	this->nuke_sprite.setPosition(player_position);

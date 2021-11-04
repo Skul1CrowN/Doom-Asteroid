@@ -90,21 +90,21 @@ void Enemy::updateEnemy(sf::RenderWindow* window, sf::Vector2f player_position,b
 	}
 	else if (this->type == 1)//Sine Wave
 	{
-		this->move_phase += (int)(deltaTime * 600.f);
+		this->move_phase += (int)(deltaTime * 300.f);
 		this->move_phase %= 360;
 		this->enemy_sprite.rotate(0.5f * speed * deltaTime);
-		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, speed * cos(this->move_phase * 3.141592 / 180)* deltaTime));
+		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, (speed) * cos((float)this->move_phase * 3.141592 / 180.f) * deltaTime));
 		if (this->enemy_sprite.getPosition().y - this->getGlobalBounds().height / 2 < 0 || this->enemy_sprite.getPosition().y + this->getGlobalBounds().height / 2 > window->getSize().y)
-			this->move_phase += 90;
+			this->move_phase += 180;
 	}
 	else if (this->type == 2)//Inverse Sine Wave
 	{
-		this->move_phase += (int)(deltaTime * 600.f);
+		this->move_phase += (int)(deltaTime * 300.f);
 		this->move_phase %= 360;
 		this->enemy_sprite.rotate(0.5f * speed * deltaTime);
-		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, -speed * cos(this->move_phase * 3.141592 / 180) * deltaTime));
+		this->enemy_sprite.move(sf::Vector2f(-speed * deltaTime, -(speed) * cos((float)this->move_phase * 3.141592 / 180.f) * deltaTime));
 		if (this->enemy_sprite.getPosition().y - this->getGlobalBounds().height/2< 0 || this->enemy_sprite.getPosition().y + this->getGlobalBounds().height / 2 > window->getSize().y)
-			this->move_phase += 90;
+			this->move_phase += 180;
 	}
 	else if (this->type == 3)//Track Player
 	{
