@@ -16,5 +16,6 @@ UI:\
 *Added Text effect when collects item or destroys asteroid.\
 *Added Health Bar of player's spaceship.\
 *Added Health Bar of Mine.\
+*Added Ammo list that indicate how many ammo you left.\
 Control:\
 *Now you can change weapon via Right Click of available weapon rotation(exclude Nuke).
