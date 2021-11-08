@@ -143,10 +143,13 @@ private:
 	bool menu_cooldown;
 	float menu_freeze;
 
+	//Cursor
+	sf::Texture cursor;
+	sf::Sprite cursor_sprite;
+
 	//Music
 	Music music;
-	int music_index = rand() % 5;
-	int previous = music_index;
+	int music_index;
 public:
 	Game(sf::RenderWindow* window);
 

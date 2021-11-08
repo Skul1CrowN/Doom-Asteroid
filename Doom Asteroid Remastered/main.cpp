@@ -4,6 +4,7 @@ int main()
 {
 	srand(time(NULL));
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Doom Asteroid", sf::Style::Fullscreen | sf::Style::Close);
+	window.setMouseCursorVisible(0);
 	sf::Image icon;
 	icon.loadFromFile("./Images/Asteroid.png");
 	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
@@ -51,6 +52,7 @@ int main()
 				game.stopMusic();
 				menu.stopGameOverMusic();
 				menu.updateMusic();
+				menu.updateCursor();
 				score.resetReturntoMenu();
 				menu.updateMenuButton(deltaTime);
 				menu.drawMainMenu();
@@ -59,6 +61,7 @@ int main()
 			case 1://Config
 				menu_trans = 1;
 				game_init = 1;
+				menu.updateCursor();
 				menu.updateConfig(deltaTime);
 				menu.updateNameInput(ev, deltaTime);
 				menu.updateMusic();
@@ -86,6 +89,7 @@ int main()
 					menu.setScore(game.getScore());
 				break;
 			case 3://Leaderboard
+				menu.updateCursor();
 				score.transitionDelay();
 				score.updateButton(deltaTime);
 				score.updateScore();
@@ -94,21 +98,24 @@ int main()
 				menu.backToMenu(score.returnToMenu());
 				break;
 			case 4: // Tutorial
+				menu.updateCursor();
 				menu.updateTutorial(deltaTime);
 				menu.drawTutorial();
-				menu.updateMusic();
+				//menu.updateMusic();
 				break;
 			case 5:// Quit
 				window.close();
 				break;
 			case 6: // Pause
 				menu_trans = 1;
+				menu.updateCursor();
 				menu.updatePause(deltaTime);
 				menu.drawPause();
 				break;
 			case 7: // Game Over
 				game.stopMusic();
 				menu.updateGameOverMusic();
+				menu.updateCursor();
 				menu.updateGameOver(deltaTime);
 				menu.drawGameOver();
 			default:

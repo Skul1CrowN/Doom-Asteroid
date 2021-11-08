@@ -64,6 +64,11 @@ Game::Game(sf::RenderWindow* window)
 	//Score
 	this->score = 0;
 
+	//Cursor
+	this->cursor.loadFromFile("Images/crosshair.png");
+	this->cursor_sprite.setTexture(this->cursor);
+	this->cursor_sprite.setOrigin(sf::Vector2f(this->cursor_sprite.getLocalBounds().width / 2, this->cursor_sprite.getLocalBounds().height / 2));
+
 	//UI
 	this->InitUI();
 }
@@ -1371,6 +1376,9 @@ void Game::Update(float deltaTime)
 			}
 		}
 
+		//Update Cursor
+		this->cursor_sprite.setPosition(sf::Vector2f(sf::Mouse::getPosition()));
+
 		//Update Texttag
 		for (int i = 0; i < this->texttags.size(); i++)
 		{
@@ -1496,6 +1504,8 @@ void Game::Render()
 		this->window->draw(weapon_ammo[i]);
 		this->window->draw(ammo_list[i]);
 	}
+
+	this->window->draw(this->cursor_sprite);
 	
 	this->window->display();
 }

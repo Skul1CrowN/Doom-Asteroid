@@ -92,6 +92,10 @@ private:
 	//Music
 	Music music;
 
+	//Cursor
+	sf::Texture cursor;
+	sf::Sprite cursor_sprite;
+
 	//Mouse Debounce
 	bool mouseheld;
 	float mouseheldTime;
@@ -106,6 +110,7 @@ public:
 
 	void setScore(int score);
 	
+	void updateCursor();
 	void updateMenuState(int state);
 	void updateMenuButton(float deltaTime);
 	void updatePause(float deltaTime);

@@ -59,6 +59,11 @@ Scoreboard::Scoreboard(sf::RenderWindow* window)
 	this->reset_text.setOrigin(sf::Vector2f(this->reset_text.getLocalBounds().width / 2, this->reset_text.getLocalBounds().height / 2));
 	this->reset_text.setPosition(sf::Vector2f(1380.f, 850.f));
 
+	//Cursor
+	this->cursor.loadFromFile("Images/cursor.png");
+
+	this->cursor_sprite.setTexture(this->cursor);
+
 	//Init File when not exist
 	for (int i = 0; i < 5; i++)
 	{
@@ -194,6 +199,9 @@ void Scoreboard::updateScore()
 
 void Scoreboard::updateButton(float deltaTime)
 {
+	//Cursor
+	this->cursor_sprite.setPosition(sf::Vector2f(sf::Mouse::getPosition()));
+
 	//Mouse Debounce
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		this->mouseheldTime += deltaTime;
@@ -293,6 +301,8 @@ void Scoreboard::render()
 		
 		this->window->draw(this->score_text[i]);
 	}
+
+	this->window->draw(cursor_sprite);
 
 	this->window->display();
 }

@@ -20,7 +20,7 @@ Player::Player(sf::Texture* texture, sf::Texture* bullet, sf::Texture* plasma, s
 
 	this->hull_breach = 0;
 	this->repaired = 0.f;
-	this->repairRequired = 10.f;
+	this->repairRequired = 5.f;
 	this->decayRate = 0.2;
 
 	this->normal_damage = 1;
@@ -611,12 +611,12 @@ void Player::updatePlayer(sf::RenderWindow* window, sf::Vector2f mouse_position,
 			this->hp += this->maxHp * 0.4f;
 			this->hull_breach = 0;
 			this->repaired = 0;
-			this->repairRequired += 5.f;
-			this->decayRate += 0.15f;
-			if (this->repairRequired > 90.f)
-				this->repairRequired = 90.f;
-			if (this->decayRate > 1.7f)
-				this->decayRate = 1.7f;
+			this->repairRequired += 2.5f;
+			this->decayRate += 0.1f;
+			if (this->repairRequired > 20.f)
+				this->repairRequired = 20.f;
+			if (this->decayRate > 0.8f)
+				this->decayRate = 0.8f;
 		}
 	}
 	//Hp bar

@@ -62,6 +62,10 @@ private:
 	//Other Debounce
 	bool toMenu = 0;
 	bool click_bounce = 0;
+
+	//Cursor
+	sf::Texture cursor;
+	sf::Sprite cursor_sprite;
 public:
 	Scoreboard(sf::RenderWindow* window);
 	static bool sortdesc(const std::tuple<std::string, int>& a, const std::tuple<std::string, int>& b);

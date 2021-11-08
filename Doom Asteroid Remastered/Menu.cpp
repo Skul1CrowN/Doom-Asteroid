@@ -164,6 +164,11 @@ Menu::Menu(sf::RenderWindow* window)
 	this->tutorial_back.setOrigin(sf::Vector2f(this->back_text.getLocalBounds().width / 2, this->back_text.getLocalBounds().height / 2));
 	this->tutorial_back.setPosition(180.f, 1000.f);
 
+	//Cursor
+	this->cursor.loadFromFile("Images/cursor.png");
+
+	this->cursor_sprite.setTexture(this->cursor);
+
 	//Debounce
 	this->mouseheld = 0;
 	this->mouseheldTime = 0.0f;
@@ -180,6 +185,11 @@ void Menu::setScore(int score)
 	this->final_score_text.setString("Score: " + std::to_string(this->score));
 	this->final_score_text.setOrigin(sf::Vector2f(this->final_score_text.getLocalBounds().width / 2, this->final_score_text.getLocalBounds().height / 2));
 	this->updateMenuState(7);
+}
+
+void Menu::updateCursor()
+{
+	this->cursor_sprite.setPosition(sf::Vector2f(sf::Mouse::getPosition()));
 }
 
 void Menu::updateMenuState(int state)
@@ -669,6 +679,8 @@ void Menu::drawMainMenu()
 
 	this->window->draw(this->dev_text);
 
+	this->window->draw(this->cursor_sprite);
+
 	this->window->display();
 }
 
@@ -695,6 +707,8 @@ void Menu::drawConfig()
 
 	this->window->draw(this->name_input);
 
+	this->window->draw(this->cursor_sprite);
+
 	this->window->display();
 }
 
@@ -720,6 +734,8 @@ void Menu::drawTutorial()
 
 	this->window->draw(this->tutorial_back);
 
+	this->window->draw(this->cursor_sprite);
+
 	this->window->display();
 }
 
@@ -735,6 +751,8 @@ void Menu::drawPause()
 
 	this->window->draw(this->abandon_text);
 
+	this->window->draw(this->cursor_sprite);
+
 	this->window->display();
 }
 
@@ -749,6 +767,8 @@ void Menu::drawGameOver()
 	this->window->draw(this->final_score_text);
 
 	this->window->draw(this->menu_text);
+
+	this->window->draw(this->cursor_sprite);
 
 	this->window->display();
 }
