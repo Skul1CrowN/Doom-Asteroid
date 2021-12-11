@@ -6,7 +6,7 @@ V1.0b\
 *Released Beta Version\
 *Might have some bugs\
 \
-V1.1b (not released)\
+V1.1b\
 Weapon:\
 +Added Nuke Weapon (Press Ctrl to switch).\
 Balance:\
